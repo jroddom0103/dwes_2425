@@ -1,0 +1,13 @@
+Repositorio GIT
+
+https://github.com/jroddom0103/dwes_2425.git
+
+Comandos GIT en el repositorio dwes
+
+git init 
+git add .
+git remote add origin https://github.com/jroddom0103/dwes_2425.git
+git config --global user.email jroddom0103@g.educaand.es
+git config --global user.name jroddom0103
+git commit -m "Añado"
+git push -u origin master
