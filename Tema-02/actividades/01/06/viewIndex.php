@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Actividad 2.1.4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+    <!-- Mostrar resultado de la variable -->
+    <h1><?=$titulo?></h1>
+    <table>
+      <tr>
+        <th>Nombre:</th>
+        <th><?=$nombre?></th>
+      </tr>  
+      <tr>
+        <th>Apellidos:</th>
+        <th><?=$apellidos?></th>
+      </tr> 
+      <tr>
+        <th>Población:</th>
+        <th><?=$poblacion?></th>
+      </tr> 
+      <tr>
+        <th>Edad:</th>
+        <th><?=$edad?></th>
+      </tr> 
+      <tr>
+        <th>Ciclo:</th>
+        <th><?=$ciclo?></th>
+      </tr> 
+      <tr>
+        <th>Curso:</th>
+        <th><?=$curso?></th>
+      </tr> 
+      <tr>
+        <th>Módulo:</th>
+        <th><?=$modulo?></th>
+      </tr> 
+    </table>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>
