@@ -4,7 +4,7 @@
      */
 
     // Cargo modelo
-    include "models/model.resultado.php";
+    include "models/model.calcular.php";
 
     // Cargo vista 
     include "views/viewResultado.php";

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.1 Calculadora Básica</title>
+  <title>2.2 Cálculo de lanzamiento de proyectiles</title>
   <!-- css bootstrap 533 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -21,14 +21,14 @@
     <!-- cabecera documento -->
     <header class="pb-3 mb-4 border-bottom">
       <i class="bi bi-calculator"></i>
-      <span class="fs-6">Proyecto 2.1 - Calculadora Básica</span>
+      <span class="fs-6">Proyecto 2.2 - Cálculo de lanzamiento de proyectiles</span>
     </header>
 
     <!-- Formulario -->
-    <legend>Calculadora Básica</legend>
+    <legend>Calculadora de proyectiles</legend>
 
     <!-- Fin del formulario -->
-    <form method="GET">
+    <form method="POST">
 
       <!-- Valor 1 -->
       <div class="input-group mb-3">
@@ -47,7 +47,7 @@
       <!-- botones de acción -->
       <div class="btn-group" role="group">
         <button type="reset" class="btn btn-secondary">Borrar</button>
-        <button type="submit" class="btn btn-warning" formaction="models/modelResultado.php">Calcular</button>
+        <button type="submit" class="btn btn-warning" formaction="calcular.php">Calcular</button>
       </div>
 
     </form>

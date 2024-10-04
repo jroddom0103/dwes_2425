@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>2.1 Calculadora Básica</title>
+    <title>2.2 Cálculo de lanzamiento de proyectiles</title>
     <!-- css bootstrap 533 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -21,9 +21,8 @@
         <!-- cabecera documento -->
         <header class="pb-3 mb-4 border-bottom">
             <i class="bi bi-calculator"></i>
-            <span class="fs-6">Proyecto 2.1 - Calculadora Básica</span>
+            <span class="fs-6">Proyecto 2.2 - Cálculo de lanzamiento de proyectiles</span>
         </header>
-
 
         <!-- Formulario -->
         <legend>Resultado</legend>
@@ -33,32 +32,48 @@
 
             <!-- Valor 1 -->
             <div class="input-group mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-default">Velocidad</span>
-                <input type="number" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" step="0.01" value="<?= $velocidad ?>" readonly>
+                <table class="table table-bordered">
+                    <tr>Valores Iniciales:</tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-default">Velocidad Inicial</span></td>
+                        <td><?= $velocidad ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-default">Ángulo en Grados</span></td>
+                        <td><?= $angulo ?></td>
+                    </tr>
+                    <tr>Resultados:</tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion ?></span></td>
+                        <td><?= $radianes ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion2 ?></span></td>
+                        <td><?= $velocidadX ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion3 ?></span></td>
+                        <td><?= $velocidadY ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion4 ?></span></td>
+                        <td><?= $alcanceMaximo ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion5 ?></span></td>
+                        <td><?= $tiempoVuelo ?></td>
+                    </tr>
+                    <tr>
+                        <td><span class="input-group-text" id="inputGroup-sizing-lg"><?= $operacion6 ?></span></td>
+                        <td><?= $alturaMaxima ?></td>
+                    </tr>
+
+                </table>
             </div>
-
-            <!-- Valor 2 -->
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-default">Ángulo</span>
-                <input type="number" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" step="0.01" value="<?= $angulo ?>" readonly>
-            </div>
-
-            <br>
-
-            <!-- radianes -->
-            <div class="input-group input-group-lg">
-                <span class="input-group-text" id="inputGroup-sizing-lg"><?=$radianes?></span>
-                <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-lg" step="01" value="<?=$radianes?>" readonly>
-            </div>
-
-            <br>
 
             <!-- botones de acción -->
             <div class="btn-group" role="group">
-                <a class="btn btn-primary" href="../viewIndex.php" role="button">Volver</a>
+                <a class="btn btn-primary" href="index.php" role="button">Volver</a>
             </div>
 
         </form>
