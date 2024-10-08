@@ -1,6 +1,6 @@
 <!-- 
 Ejemplo 5 
-Uso vistas - if alternativo
+Generación Dinámica del enlace Admin
 -->
 
 <?php $perfil = "Admin"; ?>
@@ -43,9 +43,13 @@ Uso vistas - if alternativo
             <li class="nav-item">
                 <a class="nav-link" href="#">Link</a>
             </li>
+
+            <?php if( $perfil == "Admin"): ?>
+
             <li class="nav-item">
-                <a class="nav-link <?= ($perfil != "Admin") ? 'disabled':null ?>" href="#" aria-disabled="true">Admin</a>
+                <a class="nav-link" href="#" aria-disabled="true">Admin</a>
             </li>
+            <?php endif; ?>
         </ul>
         </nav>
 
