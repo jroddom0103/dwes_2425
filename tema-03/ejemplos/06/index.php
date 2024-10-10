@@ -1,6 +1,6 @@
 <!-- 
 Ejemplo 5 
-Generación Dinámica del enlace Admin
+Uso vistas - if alternativo
 -->
 
 <?php $perfil = "Admin"; ?>
@@ -49,6 +49,7 @@ Generación Dinámica del enlace Admin
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-disabled="true">Admin</a>
             </li>
+            
             <?php endif; ?>
         </ul>
         </nav>
