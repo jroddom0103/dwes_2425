@@ -59,30 +59,30 @@ class Class_calculadora
     }
     
     # Métodos que calculan el resultado de la operación
-    function suma($valor1, $valor2)
+    function suma()
     {
         $this->operador = '+';
-        $this->resultado = $valor1 + $valor2;
+        $this->resultado = $this->valor1 + $this->valor2;
     }
-    function resta($valor1, $valor2)
+    function resta()
     {
         $this->operador = '-';
-        $this->resultado = $valor1 - $valor2;
+        $this->resultado = $this->valor1 - $this->valor2;
     }
-    function division($valor1, $valor2)
+    function division()
     {
         $this->operador = '/';
-        $this->resultado = $valor1 / $valor2;
+        $this->resultado = $this->valor1 / $this->valor2;
     }
-    function multiplicacion($valor1, $valor2)
+    function multiplicacion()
     {
         $this->operador = '*';
-        $this->resultado = $valor1 * $valor2;
+        $this->resultado = $this->valor1 * $this->valor2;
     }
-    function potencia($valor1, $valor2)
+    function potencia()
     {
-        $this->operador = ' elevado a ';
-        $this->resultado = pow($valor1, $valor2);
+        $this->operador = 'Potencia';
+        $this->resultado = pow($this->valor1, $this->valor2);
     }
 
 }
