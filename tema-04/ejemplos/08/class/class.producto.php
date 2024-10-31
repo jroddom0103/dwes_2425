@@ -6,11 +6,14 @@
 
 class Class_producto
 {
-    protected $id;
-    protected $titulo;
+    private $id;
+    private $titulo;
     protected $precio;
     protected $nombreAutor;
     protected $apellidosAutor;
+
+    static $portada = "Ninguna";
+
     function __construct(
         $id = null,
         $titulo = null,
@@ -24,6 +27,14 @@ class Class_producto
         $this->apellidosAutor = $apellidosAutor;
         $this->precio = $precio;
     }
+
+    static public function metodo_estatico(){
+        echo "esto es un método estático";
+        echo "<br>";
+        echo "Portada: ".self::$portada;
+        
+    }
+
     public function getNombreAutor()
     {
         return $this->nombreAutor;
@@ -36,9 +47,20 @@ class Class_producto
     {
         return $this->titulo;
     }
+
     public function getPrecio()
     {
         return $this->precio;
+    }
+
+    /**
+     * Set the value of titulo
+     */
+    public function setTitulo($titulo): self
+    {
+        $this->titulo = $titulo;
+
+        return $this;
     }
 }
 
@@ -193,5 +215,15 @@ class Class_libro extends Class_producto
         $resumen .= ", Autor: ".$this->getNombreAutor()." Núm. páginas: ".$this->getNumPaginas();
         $resumen .= ", Editorial: ".$this->getEditorial();
         return $resumen;
+    }
+
+    public function muestra_libro(){
+        echo $this->getId();
+        echo '<br>';
+        echo $this->getTitulo();
+        echo '<br>';
+        echo $this->getEditorial();
+        echo '<br>';
+        echo $this->getNumPaginas();
     }
 }
