@@ -27,7 +27,7 @@ class Class_tabla_articulos
     /**
      * Set the value of tabla
      */
-    public function setTabla($tabla): self 
+    public function setTabla($tabla): self
     {
         $this->tabla = $tabla;
 
@@ -156,7 +156,8 @@ class Class_tabla_articulos
             - indice_categorias
     */
 
-    public function mostrar_nombre_categorias($indice_categorias = []){
+    public function mostrar_nombre_categorias($indice_categorias = [])
+    {
         # creo array de nombre de categorías vacío
         $nombre_categorias = [];
 
@@ -180,8 +181,35 @@ class Class_tabla_articulos
             - $articulo - objeto de la clase artículos
 
     */
-    public function create(Class_articulo $articulo){
+    public function create(Class_articulo $articulo)
+    {
         $this->tabla[] = $articulo;
     }
 
+    /*
+        método: read()
+        descripcion: permite obtener el objeto de la clase artículo correspondiente a un índice de la tabla
+        
+        parámetros:
+
+            - $indice - índice de la tabla
+
+    */
+
+    public function read($indice)
+    {
+        return $this->tabla[$indice];
+    }
+
+    /*
+        método: update()
+        descripcion: permite actualizar los detalles de un artículo en la tabla
+
+        parámetros:
+            - $articulo - objeto de la clase artículo, con los detalles actualizados de dicho artículo
+            - $indice - índice de la tabla
+    */
+    public function update(Class_articulo $articulo, $indice){
+        $this->tabla[$indice] = $articulo;
+    }
 }
