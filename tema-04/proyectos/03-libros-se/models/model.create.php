@@ -22,7 +22,7 @@
     $editorial = $_POST['editorial'];
     $fecha_edicion = $_POST['fecha_edicion'];
     $materia = $_POST['materia'];
-    $etiquetas = $_POST['etiquetas'];
+    $etiquetas = $_POST['etiquetas[]'];
     $precio = $_POST['precio'];
     
 
@@ -54,7 +54,7 @@
 
     # Añadir el artículo a la tabla
     $obj_tabla_libros->create($libro);
-    
+
     # Forma alternativa ya que la propiedad tabla es pública
     // $obj_tabla_libros->tabla[] = $libro;
 
