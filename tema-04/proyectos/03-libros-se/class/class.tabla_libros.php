@@ -28,6 +28,7 @@ class Class_tabla_libros
             'Artes',
             'Informática',
             'Religión',
+            'Literatura Francesa',
             'Otros'
         ];
 
@@ -82,9 +83,9 @@ class Class_tabla_libros
             'El Principito',
             'Antoine de Saint-Exupéry',
             'Seix Barral',
-            1943,
-            1,
-            [1, 2],
+            '1992-01-04',
+            10,
+            [0,6,18],
             10.99
         );
 
@@ -97,9 +98,9 @@ class Class_tabla_libros
             'El Ingenioso Hidalgo Don Quijote de la Mancha',
             'Miguel de Cervantes',
             'Alianza Editorial',
-            2004,
+            '2004-12-30',
             0,
-            [18],
+            [0,3,4,5,6,18,23],
             18.50
         );
 
@@ -112,9 +113,9 @@ class Class_tabla_libros
             'La Sombra del Ciprés',
             'Carlos Ruiz Zafón',
             'Planeta',
-            2001,
+            '2009-09-23',
             0,
-            [18],
+            [1,2,18],
             12.99
         );
 
@@ -127,9 +128,9 @@ class Class_tabla_libros
             'Fundamentos de la Economía',
             'Luis Pérez',
             'Pearson',
-            2019 - 03 - 20,
+            '2019-03-20',
             2,
-            [3, 4, 5],
+            [3, 4, 5,6],
             25.50
         );
 
@@ -142,9 +143,9 @@ class Class_tabla_libros
             'Historia de la Filosofía',
             'María García',
             'Planeta',
-            2018 - 11 - 03,
+            '2018-11-03',
             2,
-            [8, 9, 12],
+            [4,8,16,17],
             39.95
         );
 

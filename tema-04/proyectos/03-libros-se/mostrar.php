@@ -1,7 +1,7 @@
 <?php
     /*
-        controlador: editar.php
-        descripción: muestra los detalles de un libro en modo edición
+        controlador: mostrar.php
+        descripción: muestra los detalles de un libro sin edición
 
         parámetros:
 
@@ -16,7 +16,7 @@
     # Librerias
 
     # Model
-    include 'models/model.editar.php';
+    include 'models/model.mostrar.php';
 
     # Vista
-    include 'views/view.editar.php';
+    include 'views/view.mostrar.php';

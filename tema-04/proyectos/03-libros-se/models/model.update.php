@@ -1,66 +1,68 @@
 <?php
 
-    /*
-        Modelo: model.update.php
-        Descripción: actualiza los datos del registro a partir de los detalles del formulario
+/*
+    autor: model.update.php
+    Descripción: actualiza los datos del libro
 
-        Método POST:
-                    - id
-                    - descripcion
-                    - modelo
-                    - genero
-                    - marca
-                    - unidades
-                    - precio
-                    - categorias
-        
-        Método GET:
-                    - indice (indice de la tabla correspondiente a dicho registro)
-    */
-
-    # Símbolo monetario local
-    setlocale(LC_MONETARY,"es_ES");
-
-    # Cargo los detalles del  formulario
-    $id = $_POST['id'];
-    $descripcion = $_POST['descripcion'];
-    $modelo = $_POST['modelo'];
-    $marca = $_POST['marca'];
-    $unidades = $_POST['unidades'];
-    $precio = $_POST['precio'];
-    $categorias = $_POST['categorias'];
-
-    # Crear un objeto de la clase artículos a partir de los detalles del formulario
-    $articulo = new Class_articulo(
-        $id,
-        $descripcion,
-        $modelo,
-        $marca,
-        $categorias,
-        $unidades,
-        $precio
-    );
-
-    # Cargo el índice de la tabla donde se encuentra el artículo
-    $indice = $_GET['indice'];
+    Método POST:
+        - id
+        - titulo
+        - autor
+        - editorial 
+        - fecha_edicion
+        - materia (indice)
+        - etiquetas (array)
+        - precio
     
-    # Creo un objeto de la clase tabla artículos
-    $obj_tabla_articulos = new Class_tabla_articulos();
+    Método GET:
+                - indice (indice de la tabla correspondiente a dicho registro)
+*/
 
-    # Cargo los datos en el objeto de la clase tabla de artículos
-    $obj_tabla_articulos->getDatos();
+# Símbolo monetario local
+setlocale(LC_MONETARY, "es_ES");
 
-    # Actualizo la tabla 
-    $obj_tabla_articulos->update($articulo, $indice);
+# Cargo el índice del libro que voy a editar
+$indice = $_GET['indice'];
 
-    # Extraer la tabla para la vista
-    $array_articulos = $obj_tabla_articulos->getTabla();
+# Cargo los detalles del  formulario
+$id = $_POST['id'];
+$titulo = $_POST['titulo'];
+$autor = $_POST['autor'];
+$editorial = $_POST['editorial'];
+$fecha_edicion = $_POST['fecha_edicion'];
+$materia = $_POST['materia'];
+$etiquetas = $_POST['etiquetas'];
+$precio = $_POST['precio'];
 
-    # Extraer array de marcas para la vista
-    $marcas = $obj_tabla_articulos->getMarcas();
+# Crear un objeto de la clase libro a partir de los detalles del formulario
+$libro = new Class_libro(
+    $id,
+    $titulo,
+    $autor,
+    $editorial,
+    $fecha_edicion,
+    $materia,
+    $etiquetas,
+    $precio
+);
 
+# Creo un objeto de la clase tabla_libros
+$obj_tabla_libros = new Class_tabla_libros();
 
-    
+# Cargo los libros
+$obj_tabla_libros->getDatos();
 
-    
+# Obtengo el array de materias
+$materias = $obj_tabla_libros->getMaterias();
 
+# Extraer array de edit$editorials para la vista
+$etiquetas = $obj_tabla_libros->getEtiquetas();
+
+# Actualizo los detalles del libro
+//$obj_tabla_libros->update($libro,$indice);
+
+# Comando alternativo por la propiedad NO encapsulamiento
+$obj_tabla_libros->tabla[$indice]=$libro;
+
+# Obtener el array libros
+$array_libros = $obj_tabla_libros->tabla;

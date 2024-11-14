@@ -1,8 +1,8 @@
 <?php
 
 /*
-    modelo: model.editar.php
-    descripción: carga los datos del libro que deseo actualizar
+    modelo: model.mostrar.php
+    descripción: carga los datos del libro que deseo mostrar
 
     Método GET:
 
@@ -25,10 +25,10 @@ $materias = $obj_tabla_libros->getMaterias();
 $etiquetas = $obj_tabla_libros->getEtiquetas();
 
 # Obtener el objeto de la clase artículo correspondiente a ese índice
-$libro = $obj_tabla_libros->read($indice);
+//$libro = $obj_tabla_libros->read($indice);
 
 # Forma alternativa por la propiedad de no encapsulamiento
-// $libro = $obj_tabla_libros->tabla[$indice];
+$libro = $obj_tabla_libros->tabla[$indice];
 
 //var_dump($libro);
 //exit();
