@@ -24,7 +24,7 @@
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>NRP</th>
-                        <th>Fecha de Nacimiento</th>
+                        <th class='text-end'>Edad</th>
                         <th>Población</th>
                         <th>Especialidad</th>
                         <th>Asignaturas</th>
@@ -41,7 +41,7 @@
                             <td><?= $profesor->nombre?></td>
                             <td><?= $profesor->apellidos ?></td>
                             <td><?= $profesor->nrp ?></td>
-                            <td><?= $profesor->fecha_nacimiento ?></td>
+                            <td class='text-end'><?= $profesor->getEdad($profesor->fecha_nacimiento) ?></td>
                             <td><?= $profesor->poblacion ?></td>
                             <td><?= $especialidades[$profesor->especialidad] ?></td>
                             <td><?= implode(', ', $obj_tabla_profesores->mostrar_nombre_asignaturas($profesor->asignaturas)) ?></td>
