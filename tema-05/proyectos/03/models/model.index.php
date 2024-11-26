@@ -10,11 +10,7 @@
     setlocale(LC_MONETARY,"es_ES");
 
     # Creo un objeto de la clase tabla alumnos
-    $tabla_alumnos = new Class_tabla_alumnos(
-            'localhost',
-            'root',
-            '',
-            'fp' );
+    $tabla_alumnos = new Class_tabla_alumnos();
 
     # Cargo tabla de alumnos
     $alumnos = $tabla_alumnos->getAlumnos();

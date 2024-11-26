@@ -9,6 +9,9 @@
             - detalles del alumno
     */
 
+    # Archivos de configuración
+    include 'config/configDB.php';
+
     # Clases
     include 'class/class.alumno.php';
     include 'class/class.conexion.php';

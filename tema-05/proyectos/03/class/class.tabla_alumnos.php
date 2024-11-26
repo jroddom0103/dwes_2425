@@ -17,7 +17,10 @@ class Class_tabla_alumnos extends Class_conexion
 
     public function getAlumnos()
     {
-        $sql = "
+        try {
+
+            // sentencia
+            $sql = "
             select 
                 alumnos.id,
                 alumnos.nombre, 
@@ -35,13 +38,25 @@ class Class_tabla_alumnos extends Class_conexion
             ON alumnos.id_curso = cursos.id
         ";
 
-        // ejecuto comando sql
-        $result = $this->db->query($sql);
+            // ejecuto comando sql
+            $result = $this->db->query($sql);
 
-        // obtengo un objeto de la clase mysqli_result
-        // devuelvo dicho objeto
-        return $result;
+            // obtengo un objeto de la clase mysqli_result
+            return $result;
 
+        } catch (mysqli_sql_exception $e) {
+            //error de base de datos
+            include '/views/partials/errorDB.php';
+
+            //libero result
+            $result->close();
+
+            //cierro conexión
+            $this->db->close();
+
+            //cancelo ejecución programa
+            exit();
+        }
 
     }
 
@@ -57,8 +72,9 @@ class Class_tabla_alumnos extends Class_conexion
     */
     public function create(Class_alumno $alumno)
     {
-        // Crear la sentencia preparada
-        $sql = "
+        try {
+            // Crear la sentencia preparada
+            $sql = "
         INSERT INTO 
             alumnos( 
                     nombre,
@@ -73,39 +89,52 @@ class Class_tabla_alumnos extends Class_conexion
         VALUES    (?, ?, ?, ?, ?, ?, ?, ?)                            
         ";
 
-        // ejecuto la sentenecia preprada
-        $stmt = $this->db->prepare($sql);
+            // ejecuto la sentenecia preprada
+            $stmt = $this->db->prepare($sql);
 
-        // verifico
-        if (!$stmt) {
-            die("Error al preparar sql " . $this->db->error);
+            // vinculación de parámetros
+            $stmt->bind_param(
+                'sssisssi',
+                $nombre,
+                $apellidos,
+                $email,
+                $telefono,
+                $nacionalidad,
+                $dni,
+                $fechaNac,
+                $id_curso
+            );
+
+            // asignar valores
+            $nombre = $alumno->nombre;
+            $apellidos = $alumno->apellidos;
+            $email = $alumno->email;
+            $telefono = $alumno->telefono;
+            $nacionalidad = $alumno->nacionalidad;
+            $dni = $alumno->dni;
+            $fechaNac = $alumno->fechaNac;
+            $id_curso = $alumno->id_curso;
+
+            // ejecutamos
+            $stmt->execute();
+
+        } catch (mysqli_sql_exception $e) {
+            
+            //error de base de datos
+            include '/views/partials/errorDB.php';
+
+            //libero result
+            $result->close();
+
+            //cierro conexión
+            $this->db->close();
+
+            //cancelo ejecución programa
+            exit();
         }
 
-        // vinculación de parámetros
-        $stmt->bind_param(
-            'sssisssi',
-            $nombre,
-            $apellidos,
-            $email,
-            $telefono,
-            $nacionalidad,
-            $dni,
-            $fechaNac,
-            $id_curso
-        );
 
-        // asignar valores
-        $nombre = $alumno->nombre;
-        $apellidos = $alumno->apellidos;
-        $email = $alumno->email;
-        $telefono = $alumno->telefono;
-        $nacionalidad = $alumno->nacionalidad;
-        $dni = $alumno->dni;
-        $fechaNac = $alumno->fechaNac;
-        $id_curso = $alumno->id_curso;
 
-        // ejecutamos
-        $stmt->execute();
 
     }
 
@@ -157,7 +186,8 @@ class Class_tabla_alumnos extends Class_conexion
         Método que me devuelve todos los cursos en un array assoc de cursos
     */
 
-    public function getCursos() {
+    public function getCursos()
+    {
         $sql = "
             SELECT 
                     id, 

@@ -1,39 +1,39 @@
 <?php
-/**
- * Clase conexion mediante msqli
- */
 
- Class Class_conexion{
-    public $server;
+    /*
+        Clase conexión mediante mysqli
+    */
 
-    public $user;
+    Class Class_conexion {
 
-    public $pass;
+        public $server;
+        public $user;
+        public $pass;
+        public $base_datos;
+        public $db;
 
-    public $base_datos;
+        public function __construct(
+            $server, 
+            $user,
+            $pass,
+            $base_datos
+        ) {
+            // asigno valor a las propiedades
+            $this->server = $server;
+            $this->user = $user;
+            $this->pass = $pass;
+            $this->base_datos = $base_datos;
 
-    public $db;
+            // realizo la conexión
+            $this->db = new mysqli ($server, $user, $pass, $base_datos);
 
-    public function __construct(
-        $server,
-        $user,
-        $pass,
-        $base_datos,
-    )
-    {
-        // asigno valor a las propiedades
-        $this->server = $server;
-        $this->user = $user;
-        $this->pass = $pass;
-        $this->base_datos = $base_datos;
+            // verificar conexión
+            if ($this->db->connect_errno) {
+                die ('ERROR DE CONEXIÓN: '. $this->db->connect_error );
+            }
 
-        // realizo la conexion
-        $this->db = new mysqli($server, $user, $pass, $base_datos);
-
-        // verificar conexion
-        if($this->db->connect_errno){
-            die('ERROR DE CONEXION: ' . $this->db->connect_error);
+          
 
         }
+
     }
- }

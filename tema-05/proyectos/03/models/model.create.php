@@ -35,7 +35,7 @@
     );
 
     # Añadimos alumno a la tabla
-    $alumnos = new Class_tabla_alumnos('localhost', 'root', '', 'fp');
+    $alumnos = new Class_tabla_alumnos();
 
     $alumnos->create($alumno);
 
