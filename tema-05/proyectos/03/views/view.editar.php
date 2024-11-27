@@ -3,7 +3,7 @@
 
 <head>
     <?php include 'views/layouts/layout.head.html'; ?>
-    <title>Editar Libro - CRUD Libros </title>
+    <title>Editar Alumno - BBDD fp </title>
 </head>
 
 <body>
@@ -13,95 +13,72 @@
         <!-- Encabezado proyecto -->
         <?php include 'views/partials/partial.header.php'; ?>
 
-        <legend>Formulario Editar Libro</legend>
+        <legend>Formulario Edición Alumno</legend>
 
         <!-- Formulario Nuevo libro -->
 
-        <form action="update.php?indice=<?= $indice ?>" method="POST">
+        <form action="update.php?id=<?=$id?>" method="POST">
 
-            <!-- id -->
+            <!-- Nombre -->
             <div class="mb-3">
-                <label for="id" class="form-label">Id</label>
-                <input type="text" class="form-control" name="id" value="<?= $libro->id?>" readonly>
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" value="<?=$alumno->nombre?>">
+            </div>
+            <!-- Apellidos -->
+            <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" name="apellidos" value="<?=$alumno->apellidos?>">
+            </div>
+            <!-- Fecha Nacimiento -->
+            <div class="mb-3">
+                <label for="fechaNac" class="form-label">Fecha Nacimiento</label>
+                <input type="date" class="form-control" name="fechaNac" value="<?=$alumno->fechaNac?>">
+            </div>
+            <!-- Dni -->
+            <div class="mb-3">
+                <label for="dni" class="form-label">Dni</label>
+                <input type="text" class="form-control" name="dni" value="<?=$alumno->dni?>">
             </div>
 
-            <!-- titulo -->
+            <!-- Email -->
             <div class="mb-3">
-                <label for="titulo" class="form-label">Titulo</label>
-                <input type="text" class="form-control" name="titulo" value="<?= $libro->titulo?>">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" value="<?=$alumno->email?>">
+            </div>
+            <!-- Telefono -->
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" name="telefono" value="<?=$alumno->telefono?>">
+            </div>
+            <!-- Nacionalidad -->
+            <div class="mb-3">
+                <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                <input type="text" class="form-control" name="nacionalidad" value="<?=$alumno->nacionalidad?>">
             </div>
 
-            <!-- autor -->
+            <!-- Select Dinámico Cursos -->
             <div class="mb-3">
-                <label for="autor" class="form-label">Autor</label>
-                <input type="text" class="form-control" name="autor" value="<?= $libro->autor?>">
-            </div>
-
-            <!-- editorial -->
-            <div class="mb-3">
-                <label for="editorial" class="form-label">Editorial</label>
-                <input type="text" class="form-control" name="editorial" value="<?= $libro->editorial?>">
-            </div>
-
-            <!-- fecha_edicion -->
-            <div class="mb-3">
-                <label for="fecha_edicion" class="form-label">Fecha Edición</label>
-                <input type="date" class="form-control" name="fecha_edicion" value="<?= $libro->fecha_edicion?>">
-            </div>
-
-            <!-- Precio -->
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio (€)</label>
-                <input type="number" class="form-control" name="precio" step="0.01" value="<?= $libro->precio?>">
-            </div>
-
-            <!-- Select Dinámico Materias -->
-            <div class="mb-3">
-                <label for="materia" class="form-label">Materia</label>
-                <select class="form-select" name="materia" id="materia">
-                    <!-- <option selected disabled>Seleccione una materia</option> -->
-                    <!-- mostrar lista materias -->
-                    <?php foreach ($materias as $indice => $data): ?>
-                        <option value="<?= $indice ?>"
-                        <?= ($libro->materia == $indice)? 'selected': null ?>
+                <label for="curso" class="form-label">Curso</label>
+                <select class="form-select" name="id_curso">
+                    <option selected disabled>Seleccione curso</option>
+                    <!-- mostrar lista cucrsos -->
+                    <?php foreach ($cursos as $data): ?>
+                        <!-- generar dinámicamente el parámetro selected -->
+                        <option value="<?= $data['id'] ?>"
+                        <?= ($alumno->id_curso == $data['id'])? 'selected' :null ?>
                         >
-                            <?= $data ?>
+                            <?= $data['curso'] ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-
             </div>
-
-            <!-- lista checbox dinámica etiquetas -->
-            <div class="mb-3">
-                <label for="etiquetas" class="form-label">Seleccione las Etiquetas</label>
-                <div class="form-control">
-                    <!-- muestro el array etiquetas -->
-                    <?php foreach ($etiquetas as $indice => $data): ?>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="etiquetas[]" value="<?= $indice ?>"
-                            <?= in_array($indice, $libro->etiquetas)? 'checked': null ?>
-                            >
-                            <label class="form-check-label" for="">
-                                <?= $data ?>
-                            </label>
-                        </div>
-                    <?php endforeach; ?>
-
-                </div>
-            </div>
-
             <!-- botones de acción -->
             <a class="btn btn-secondary" href="index.php" role="button">Cancelar</a>
             <button type="reset" class="btn btn-danger">Borrar</button>
-            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <button type="submit" class="btn btn-primary">Enviar</button>
 
         </form>
-
         <!-- Fin formulario nuevo artículo -->
-
-
-
     </div>
     <br><br><br>
 

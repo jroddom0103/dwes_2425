@@ -1,17 +1,21 @@
 <?php
     /*
         controlador: editar.php
-        descripción: muestra los detalles de un libro en modo edición
+        descripción: muestra los detalles de un alumno en modo edición
 
         parámetros:
 
             - Método GET:
-                - indice donde se ecuentra el libro dentro de la tabla
+                - id del alumno
     */
 
+    # Archivos de configuración
+    include 'config/configDB.php'; 
+
     # Clases
-    include 'class/class.libro.php';
-    include 'class/class.tabla_libros.php';
+    include 'class/class.alumno.php';
+    include 'class/class.conexion.php';
+    include 'class/class.tabla_alumnos.php';
 
     # Librerias
 

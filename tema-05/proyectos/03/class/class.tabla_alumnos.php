@@ -133,23 +133,54 @@ class Class_tabla_alumnos extends Class_conexion
             exit();
         }
 
-
-
-
     }
 
     /*
         método: read()
-        descripcion: permite obtener el objeto de la clase libro a partir de un índice 
-        de la tabla
+        descripcion: permite obtener el objeto de la clase alumno a partir del id del alumno 
 
         parámetros:
 
-            - $indice - índice de la tabla
+            - $id - id de la tabla
     */
-    public function read($indice)
+    public function read($id)
     {
-        return $this->tabla[$indice];
+        try {
+            // Crear la sentencia preparada
+            $sql = "SELECT * FROM alumnos WHERE id = ? LIMIT 1"; 
+        
+            // Creo la sentencia preparada objeto clase mysqli_stmt
+            $stmt = $this->db->prepare($sql);
+
+            // vinculación de parámetros
+            $stmt->bind_param(
+                'i',
+                $id
+            );
+
+            // ejecutamos
+            $stmt->execute();
+
+            // Devolvemos objeto de la clase mysqli_result
+            $result = $stmt->get_result();
+            
+            // Devolvemos un objeto de la clase alumno
+            return $result->fetch_object();
+
+        } catch (mysqli_sql_exception $e) {
+            
+            //error de base de datos
+            include '/views/partials/errorDB.php';
+
+            //libero result
+            $result->close();
+
+            //cierro conexión
+            $this->db->close();
+
+            //cancelo ejecución programa
+            exit();
+        }
     }
 
     /*
@@ -161,6 +192,7 @@ class Class_tabla_alumnos extends Class_conexion
             - $libro - objeto de la clase libro, con los detalles actualizados de dicho artículo
             - $indice - índice de la tabla
     */
+
     public function update(Class_libro $libro, $indice)
     {
         $this->tabla[$indice] = $libro;
