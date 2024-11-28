@@ -50,3 +50,6 @@ $alumnos = new Class_tabla_alumnos();
 
 # Llamo al método update de Class_tabla_alumnos
 $alumnos->update($alumno, $id);
+
+# Redirecciono al controlador index
+header("location: index.php");

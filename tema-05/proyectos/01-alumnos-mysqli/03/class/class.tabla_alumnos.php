@@ -36,6 +36,7 @@ class Class_tabla_alumnos extends Class_conexion
             INNER JOIN
                 cursos
             ON alumnos.id_curso = cursos.id
+            ORDER BY alumnos.id
         ";
 
             // ejecuto comando sql
@@ -94,7 +95,7 @@ class Class_tabla_alumnos extends Class_conexion
 
             // vinculación de parámetros
             $stmt->bind_param(
-                'sssisssi',
+                'sssisisi',
                 $nombre,
                 $apellidos,
                 $email,
@@ -119,7 +120,7 @@ class Class_tabla_alumnos extends Class_conexion
             $stmt->execute();
 
         } catch (mysqli_sql_exception $e) {
-            
+
             //error de base de datos
             include '/views/partials/errorDB.php';
 
@@ -147,8 +148,8 @@ class Class_tabla_alumnos extends Class_conexion
     {
         try {
             // Crear la sentencia preparada
-            $sql = "SELECT * FROM alumnos WHERE id = ? LIMIT 1"; 
-        
+            $sql = "SELECT * FROM alumnos WHERE id = ? LIMIT 1";
+
             // Creo la sentencia preparada objeto clase mysqli_stmt
             $stmt = $this->db->prepare($sql);
 
@@ -163,17 +164,20 @@ class Class_tabla_alumnos extends Class_conexion
 
             // Devolvemos objeto de la clase mysqli_result
             $result = $stmt->get_result();
-            
+
             // Devolvemos un objeto de la clase alumno
             return $result->fetch_object();
 
         } catch (mysqli_sql_exception $e) {
-            
+
             //error de base de datos
             include '/views/partials/errorDB.php';
 
             //libero result
             $result->close();
+
+            //libero stmt
+            $stmt->close();
 
             //cierro conexión
             $this->db->close();
@@ -185,19 +189,81 @@ class Class_tabla_alumnos extends Class_conexion
 
     /*
         método: update()
-        descripcion: permite actualizar los detalles de un libro en la tabla
+        descripcion: permite actualizar los detalles de un alumno en la tabla
 
         parámetros:
 
-            - $libro - objeto de la clase libro, con los detalles actualizados de dicho artículo
-            - $indice - índice de la tabla
+            - $alumno - objeto de la clase alumno
+            - $id - id 
     */
 
-    public function update(Class_libro $libro, $indice)
+    public function update(Class_alumno $alumno, $id)
     {
-        $this->tabla[$indice] = $libro;
-    }
+        try {
+            // sentencia
+            $sql = "
+        UPDATE alumnos
+        SET 
+        nombre =?,
+        apellidos =?,
+        email =?,
+        telefono =?,
+        nacionalidad =?,
+        dni =?,
+        fechaNac =?,
+        id_curso =?
+        WHERE id =?
+        LIMIT 1
+        ";
 
+            $stmt = $this->db->prepare($sql);
+
+            // vinculación de parámetros
+            $stmt->bind_param(
+                'sssissssi',
+                $nombre,
+                $apellidos,
+                $email,
+                $telefono,
+                $nacionalidad,
+                $dni,
+                $fechaNac,
+                $id_curso,
+                $id
+            );
+
+
+            // asignar valores
+            $nombre = $alumno->nombre;
+            $apellidos = $alumno->apellidos;
+            $email = $alumno->email;
+            $telefono = $alumno->telefono;
+            $nacionalidad = $alumno->nacionalidad;
+            $dni = $alumno->dni;
+            $fechaNac = $alumno->fechaNac;
+            $id_curso = $alumno->id_curso;
+
+            // Ejecuto la consulta
+            $stmt->execute();
+
+            // Devuelvo true si todo salió bien
+            return true;
+
+        } catch (mysqli_sql_exception $e) {
+            //error de base de datos
+            include '/views/partials/errorDB.php';
+
+            $result->close();
+
+            $stmt->close();
+
+            //cierro conexión
+            $this->db->close();
+
+            //cancelo ejecución programa
+            exit();
+        }
+    }
 
     /*
         método: delete()
