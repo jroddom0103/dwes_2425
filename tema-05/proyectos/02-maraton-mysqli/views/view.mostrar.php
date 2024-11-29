@@ -6,7 +6,7 @@
     <title>Mostrar Corredor - BBDD maratoon </title>
 
     <style>
-        #cajaSexo{
+        #cajaSexo {
             border: gainsboro 2px solid;
             padding: 10px;
         }
@@ -29,56 +29,56 @@
             <!-- Nombre -->
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" name="nombre" value="<?=$corredor->nombre?>" readonly>
+                <input type="text" class="form-control" name="nombre" value="<?= $corredor->nombre ?>" readonly>
             </div>
 
             <!-- Apellidos -->
             <div class="mb-3">
                 <label for="apellidos" class="form-label">Apellidos</label>
-                <input type="text" class="form-control" name="apellidos" value="<?=$corredor->apellidos?>" readonly>
+                <input type="text" class="form-control" name="apellidos" value="<?= $corredor->apellidos ?>" readonly>
             </div>
 
             <!-- Apellidos -->
             <div class="mb-3">
                 <label for="ciudad" class="form-label">Ciudad</label>
-                <input type="text" class="form-control" name="ciudad" value="<?=$corredor->ciudad?>" readonly>
+                <input type="text" class="form-control" name="ciudad" value="<?= $corredor->ciudad ?>" readonly>
             </div>
 
             <!-- Fecha Nacimiento -->
             <div class="mb-3">
                 <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" name="fechaNacimiento" value="<?=$corredor->fechaNacimiento?>" readonly>
+                <input type="date" class="form-control" name="fechaNacimiento" value="<?= $corredor->fechaNacimiento ?>"
+                    readonly>
             </div>
 
             <!-- Sexo -->
-            <div id="cajaSexo" class="mb-3">
-                <label for="sexo" class="form-label">Sexo</label>
-                <div class="d-flex flex-wrap gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="hombre" value="H">
-                        <label class="form-check-label" for="hombre">Hombre</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="mujer" value="M">
-                        <label class="form-check-label" for="mujer">Mujer</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="sinEspecificar" value="N">
-                        <label class="form-check-label" for="sinEspecificar">Sin especificar</label>
-                    </div>
-                </div>
+            <div class="mb-3">
+                <label for="fechaNacimiento" class="form-label">Sexo</label>
+                <input type="text" class="form-control" name="fechaNacimiento" value="<?= $corredor->sexo ?>" readonly>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" value="<?=$corredor->email?>" readonly>
+                <input type="email" class="form-control" name="email" value="<?= $corredor->email ?>" readonly>
             </div>
 
             <!-- Dni -->
             <div class="mb-3">
                 <label for="dni" class="form-label">Dni</label>
-                <input type="text" class="form-control" name="dni" value="<?=$corredor->dni?>"  readonly>
+                <input type="text" class="form-control" name="dni" value="<?= $corredor->dni ?>" readonly>
+            </div>
+
+            <!-- Categoría -->
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Categoría</label>
+                <input type="text" class="form-control" name="categoria" value="" readonly>
+            </div>
+
+            <!-- Clubs -->
+            <div class="mb-3">
+                <label for="club" class="form-label">Clubs</label>
+                <input type="text" class="form-control" name="club" value="" readonly>
             </div>
 
 

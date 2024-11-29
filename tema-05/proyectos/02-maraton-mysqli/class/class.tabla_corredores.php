@@ -25,11 +25,10 @@ class Class_tabla_corredores extends Class_conexion
                 corredores.id,
                 concat_ws(', ', corredores.apellidos, corredores.nombre) as corredor,
                 corredores.ciudad,
-                corredores.fechaNacimiento,
                 corredores.sexo,
                 corredores.email,
                 corredores.dni,
-                TIMESTAMPDIFF(YEAR, corredores.fechaNacimiento, CURDATE()) AS edad,
+                corredores.edad,
                 categorias.nombre AS categoria,
                 clubs.nombre AS club
             FROM 
@@ -48,7 +47,7 @@ class Class_tabla_corredores extends Class_conexion
 
         } catch (mysqli_sql_exception $e) {
 
-            // error de  base dedatos
+            // error de  base de datos
             include 'views/partials/errorDB.php';
 
             // libero result
@@ -127,10 +126,10 @@ class Class_tabla_corredores extends Class_conexion
             $stmt->execute();
         } catch (mysqli_sql_exception $e) {
 
-            // error de  base dedatos
+            // error de  base de datos
             include 'views/partials/errorDB.php';
 
-            // libero sentencia preprada
+            // libero sentencia preparada
             $stmt->close();
 
             // cierro conexión

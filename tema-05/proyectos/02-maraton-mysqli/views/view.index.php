@@ -23,7 +23,6 @@
                         <th>Id</th>
                         <th>Corredor</th>
                         <th>Ciudad</th>
-                        <th>Fecha de Nacimiento</th>
                         <th>Sexo</th>
                         <th>Email</th>
                         <th>DNI</th>
@@ -42,7 +41,6 @@
                             <td><?= $corredor->id ?></td>
                             <td><?= $corredor->corredor?></td>
                             <td><?= $corredor->ciudad ?></td>
-                            <td><?= $corredor->fechaNacimiento ?></td>
                             <td><?= $corredor->sexo ?></td>
                             <td><?= $corredor->email ?></td>
                             <td><?= $corredor->dni ?></td>

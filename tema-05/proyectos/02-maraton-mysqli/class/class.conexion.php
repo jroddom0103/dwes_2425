@@ -29,13 +29,6 @@ class Class_conexion
 
         }
 
-
-
-
-
-
-
-
     }
 
 }

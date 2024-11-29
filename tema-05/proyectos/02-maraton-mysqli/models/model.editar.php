@@ -18,6 +18,9 @@
     # Cargo tabla de categorías
     $categorias = $tabla_corredores->getCorredores();
 
+    # Cargo tabla de cursos
+    $clubs = $tabla_corredores->getClubs();
+
     # Obtener los detalles del corredor 
     // objeto de la clase corredor
     $corredor = $tabla_corredores->read($id);

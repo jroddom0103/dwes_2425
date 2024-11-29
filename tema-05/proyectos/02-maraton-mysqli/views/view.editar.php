@@ -89,7 +89,9 @@
                     <option selected disabled>Seleccione categoría</option>
                     <!-- Editar lista cucrsos -->
                     <?php foreach ($categorias as $data): ?>
-                        <option value="<?= $data['id'] ?>">
+                        <option value="<?= $data['id'] ?>"
+                        <?= ($corredor->id_categoria == $data['id'])? 'selected' :null ?> 
+                        >
                             <?= $data['categoria'] ?>
                         </option>
                     <?php endforeach; ?>
@@ -101,10 +103,12 @@
                 <label for="club" class="form-label">Club</label>
                 <select class="form-select" name="id_club">
                     <option selected disabled>Seleccione club</option>
-                    <!-- Editar lista cucrsos -->
+                    <!-- Editar lista cursos -->
                     <?php foreach ($clubs as $data): ?>
-                        <option value="<?= $data['id'] ?>">
-                            <?= $data['club'] ?>
+                        <option value="<?= $data['id'] ?>"
+                        <?= ($corredor->id_club == $data['id'])? 'selected' :null ?>
+                        >
+                        <?= $data['club'] ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
