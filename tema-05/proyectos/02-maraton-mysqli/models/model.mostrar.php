@@ -27,6 +27,12 @@ $clubs = $obj_tabla_corredores->getClubs();
 # Obtener el objeto de la clase corredor correspondiente a ese índice
 $corredor = $obj_tabla_corredores->read($id);
 
+# Obtener la categoría correspondiente al corredor
+$categoria_corredor = implode($categorias[$corredor->id_categoriaimplode()]);
+
+# Obtener el club correspondiente al corredor
+$club_corredor = $clubs[$corredor->id_club];
+
 # Forma alternativa por la propiedad de no encapsulamiento
 // $libro = $obj_tabla_libros->tabla[$indice];
 
