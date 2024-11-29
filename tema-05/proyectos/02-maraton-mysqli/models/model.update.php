@@ -2,59 +2,53 @@
 
 /*
     Modelo: model.update.php
-    Descripción: actualiza los datos del alumno
+    Descripción: actualiza los datos del corredor
 
      Métod POST:
         
-        - Los detalles del alumno
+        - Los detalles del corredor
     
     Método GET:
 
-        - id del alumno
+        - id del corredor
 */
 
 # Símbolo monetario local
 setlocale(LC_MONETARY, "es_ES");
 
-# Cargo el id del alumno
+# Cargo el id del corredor
 $id = $_GET['id'];
 
-# Cargo los detalles del alumno
+# Cargo los detalles del corredor
 $nombre = $_POST['nombre'];
 $apellidos = $_POST['apellidos'];
-$fechaNac = $_POST['fechaNac'];
+$ciudad = $_POST['ciudad'];
+$fechaNacimiento = $_POST['fechaNacimiento'];
+$sexo = $_POST['sexo'];
 $email = $_POST['email'];
-$telefono = $_POST['telefono'];
-$nacionalidad = $_POST['nacionalidad'];
-$dni = $_POST['dni'];
-$id_curso = $_POST['id_curso'];
+$dni = $_POST['dni']; 
+$id_categoria = $_POST['id_categoria'];
+$id_club = $_POST['id_club'];
 
 # Validación
 
- # Creamos objeto de la clase Class_alumno
- $alumno = new Class_alumno (
+# Creamos objeto de la clase Class_corredor
+$corredor = new Class_corredor(
     $id,
     $nombre,
     $apellidos,
+    $ciudad,
+    $fechaNacimiento,
+    $sexo,
     $email,
-    $telefono,
-    $nacionalidad,
     $dni,
-    $fechaNac, 
-    $id_curso
+    null,
+    $id_categoria,
+    $id_club
 );
 
-# Actulizo los detalles del alumno en la  tabla
-$alumnos = new Class_tabla_alumnos();
+# Actualizo los detalles del corredor en la  tabla
+$corredores = new Class_tabla_corredores();
 
-# Llamo al método update de Class_tabla_alumnos
-$alumnos->update($alumno, $id);
-
-
-
-
-
-
-
-
-
+# Llamo al método update de Class_tabla_corredores
+$corredores->update($corredor, $id);

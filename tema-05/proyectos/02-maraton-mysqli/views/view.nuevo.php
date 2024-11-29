@@ -116,7 +116,7 @@
             <button type="submit" class="btn btn-primary">Enviar</button>
 
         </form>
-        <!-- Fin formulario nuevo artículo -->
+        <!-- Fin formulario nuevo corredor -->
     </div>
     <br><br><br>
 

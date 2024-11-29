@@ -2,24 +2,24 @@
 
     /*
         modelo: model.editar.php
-        descripción: carga los datos del alumno que deseo actualizar
+        descripción: carga los datos del corredor que deseo actualizar
 
         Método GET:
 
-            - id del alumno
+            - id del corredor
     */
 
     # Cargamos el id del alumno que vamos a editar
     $id = $_GET['id'];
 
     # Creo un objeto de la clase tabla alumnos
-    $tabla_alumnos = new Class_tabla_alumnos();
+    $tabla_corredores = new Class_tabla_corredores();
 
-    # Cargo tabla de cursos
-    $cursos = $tabla_alumnos->getCursos();
+    # Cargo tabla de categorías
+    $categorias = $tabla_corredores->getCorredores();
 
-    # Obtener los detalles del alumno 
-    // objeto de la clase alumno
-    $alumno = $tabla_alumnos->read($id);
+    # Obtener los detalles del corredor 
+    // objeto de la clase corredor
+    $corredor = $tabla_corredores->read($id);
 
    
