@@ -28,7 +28,7 @@ $clubs = $obj_tabla_corredores->getClubs();
 $corredor = $obj_tabla_corredores->read($id);
 
 # Obtener la categoría correspondiente al corredor
-$categoria_corredor = implode($categorias[$corredor->id_categoriaimplode()]);
+$categoria_corredor = $categorias[$corredor->id_categoria];
 
 # Obtener el club correspondiente al corredor
 $club_corredor = $clubs[$corredor->id_club];
