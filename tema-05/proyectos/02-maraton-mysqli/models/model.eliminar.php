@@ -2,18 +2,18 @@
 
 /*
         modelo: model.eliminar.php
-        descripción: elimina alumno de la tabla
+        descripción: elimina corredor de la tabla
         
         Método GET:
 
-            - id: id del alumno
+            - id: id del corredor
     */
 
-# Cargamos el id del alumno que vamos a editar
+# Cargamos el id del corredor que vamos a editar
 $id = $_GET['id'];
 
-# Creo un objeto de la clase tabla alumnos
-$tabla_alumnos = new Class_tabla_alumnos();
+# Creo un objeto de la clase tabla corredores
+$tabla_corredores = new Class_tabla_corredores();
 
-# Eliminar alumno
-$alumno = $tabla_alumnos->delete($id);
+# Eliminar corredor
+$corredor = $tabla_corredores->delete($id);

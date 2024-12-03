@@ -6,7 +6,7 @@
     <title>Editar Corredor - BBDD maratoon </title>
 
     <style>
-        #cajaSexo{
+        #cajaSexo {
             border: gainsboro 2px solid;
             padding: 10px;
         }
@@ -24,30 +24,31 @@
 
         <!-- Formulario Editar corredor -->
 
-        <form action="create.php" method="POST">
+        <form action="update.php?id=<?=$corredor->id?>" method="POST">
 
             <!-- Nombre -->
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" name="nombre" value="<?=$corredor->nombre?>">
+                <input type="text" class="form-control" name="nombre" value="<?= $corredor->nombre ?>">
             </div>
 
             <!-- Apellidos -->
             <div class="mb-3">
                 <label for="apellidos" class="form-label">Apellidos</label>
-                <input type="text" class="form-control" name="apellidos" value="<?=$corredor->apellidos?>">
+                <input type="text" class="form-control" name="apellidos" value="<?= $corredor->apellidos ?>">
             </div>
 
             <!-- Apellidos -->
             <div class="mb-3">
                 <label for="ciudad" class="form-label">Ciudad</label>
-                <input type="text" class="form-control" name="ciudad" value="<?=$corredor->ciudad?>">
+                <input type="text" class="form-control" name="ciudad" value="<?= $corredor->ciudad ?>">
             </div>
 
             <!-- Fecha Nacimiento -->
             <div class="mb-3">
                 <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" name="fechaNacimiento" value="<?=$corredor->fechaNacimiento?>">
+                <input type="date" class="form-control" name="fechaNacimiento"
+                    value="<?= $corredor->fechaNacimiento ?>">
             </div>
 
             <!-- Sexo -->
@@ -55,30 +56,34 @@
                 <label for="sexo" class="form-label">Sexo</label>
                 <div class="d-flex flex-wrap gap-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="hombre" value="H">
+                        <input class="form-check-input" type="radio" name="sexo" id="hombre" value="H"
+                            <?= ($corredor->sexo == 'H') ? 'checked' : ''; ?>>
                         <label class="form-check-label" for="hombre">Hombre</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="mujer" value="M">
+                        <input class="form-check-input" type="radio" name="sexo" id="mujer" value="M"
+                            <?= ($corredor->sexo == 'M') ? 'checked' : ''; ?>>
                         <label class="form-check-label" for="mujer">Mujer</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="sinEspecificar" value="N">
+                        <input class="form-check-input" type="radio" name="sexo" id="sinEspecificar" value=""
+                            <?= ($corredor->sexo == '') ? 'checked' : ''; ?>>
                         <label class="form-check-label" for="sinEspecificar">Sin especificar</label>
                     </div>
                 </div>
             </div>
 
+
             <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" value="<?=$corredor->email?>">
+                <input type="email" class="form-control" name="email" value="<?= $corredor->email ?>">
             </div>
 
             <!-- Dni -->
             <div class="mb-3">
                 <label for="dni" class="form-label">Dni</label>
-                <input type="text" class="form-control" name="dni" value="<?=$corredor->dni?>">
+                <input type="text" class="form-control" name="dni" value="<?= $corredor->dni ?>">
             </div>
 
 
@@ -87,28 +92,24 @@
                 <label for="club" class="form-label">Categoría</label>
                 <select class="form-select" name="id_categoria">
                     <option selected disabled>Seleccione categoría</option>
-                    <!-- Editar lista cucrsos -->
-                    <?php foreach ($categorias as $data): ?>
-                        <option value="<?= $data['id'] ?>"
-                        <?= ($corredor->id_categoria == $data['id'])? 'selected' :null ?> 
-                        >
-                            <?= $data['categoria'] ?>
+                    <?php foreach ($categorias as $id => $nombre): ?>
+                        <option value="<?= $id ?>" <?= ($corredor->id_categoria == $id) ? 'selected' : null ?>>
+                            <?= $nombre ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
+
             </div>
+
 
             <!-- Select Dinámico Clubs -->
             <div class="mb-3">
                 <label for="club" class="form-label">Club</label>
                 <select class="form-select" name="id_club">
                     <option selected disabled>Seleccione club</option>
-                    <!-- Editar lista cursos -->
-                    <?php foreach ($clubs as $data): ?>
-                        <option value="<?= $data['id'] ?>"
-                        <?= ($corredor->id_club == $data['id'])? 'selected' :null ?>
-                        >
-                        <?= $data['club'] ?>
+                    <?php foreach ($clubs as $id => $nombre): ?>
+                        <option value="<?= $id ?>" <?= ($corredor->id_club == $id) ? 'selected' : null ?>>
+                            <?= $nombre ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -116,6 +117,8 @@
 
             <!-- botones de acción -->
             <a class="btn btn-secondary" href="index.php" role="button">Cancelar</a>
+            <button type="reset" class="btn btn-danger">Borrar</button>
+            <button type="submit" class="btn btn-primary">Enviar</button>
 
         </form>
         <!-- Fin formulario Editar corredor -->

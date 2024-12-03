@@ -61,7 +61,6 @@ class Class_tabla_corredores extends Class_conexion
         }
     }
 
-
     /*
         método: create()
         descripcion: permite añadir un objeto de la clase corredor a la tabla
@@ -72,13 +71,11 @@ class Class_tabla_corredores extends Class_conexion
 
     */
     public function create(Class_corredor $corredor)
-    {
-        try {
-
-            // Crear la sentencia preparada
-            $sql = "
-        INSERT INTO 
-            corredores( 
+{
+    try {
+        // Crear la sentencia preparada
+        $sql = "
+            INSERT INTO corredores( 
                     nombre,
                     apellidos,
                     ciudad,
@@ -87,58 +84,54 @@ class Class_tabla_corredores extends Class_conexion
                     email,
                     dni,
                     id_categoria,
-                    id_club
+                    id_club,
+                    edad  -- Añadido el campo edad
                    )
-        VALUES    (?, ?, ?, ?, ?, ?, ?, ?, ?)                            
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  -- Añadido el ? para la edad
         ";
 
-            // ejecuto la sentenecia preprada
-            $stmt = $this->db->prepare($sql);
+        // ejecuto la sentencia preparada
+        $stmt = $this->db->prepare($sql);
 
-            $edad = $corredor->edad();
+        // Calcular la edad
+        $edad = $corredor->calcularEdad();
 
-            // vinculación de parámetros
-            $stmt->bind_param(
-                'ssssssiii',
-                $nombre,
-                $apellidos,
-                $ciudad,
-                $fechaNacimiento,
-                $sexo,
-                $email,
-                $dni,
-                $id_categoria,
-                $id_club
-            );
+        // vinculación de parámetros
+        $stmt->bind_param(
+            'ssssssiiis', 
+            $nombre,
+            $apellidos,
+            $ciudad,
+            $fechaNacimiento,
+            $sexo,
+            $email,
+            $dni,
+            $id_categoria,
+            $id_club,
+            $edad   
+        );
 
-            // asignar valores
-            $nombre = $corredor->nombre;
-            $apellidos = $corredor->apellidos;
-            $ciudad = $corredor->ciudad;
-            $fechaNacimiento = $corredor->fechaNacimiento;
-            $sexo = $corredor->sexo;
-            $email = $corredor->email;
-            $dni = $corredor->dni;
-            $id_categoria = $corredor->id_categoria;
-            $id_club = $corredor->id_club;
+        // Asignar valores a los parámetros
+        $nombre = $corredor->nombre;
+        $apellidos = $corredor->apellidos;
+        $ciudad = $corredor->ciudad;
+        $fechaNacimiento = $corredor->fechaNacimiento;
+        $sexo = $corredor->sexo;
+        $email = $corredor->email;
+        $dni = $corredor->dni;
+        $id_categoria = $corredor->id_categoria;
+        $id_club = $corredor->id_club;
 
-            // ejecutamos
-            $stmt->execute();
-        } catch (mysqli_sql_exception $e) {
-
-            // error de  base de datos
-            include 'views/partials/errorDB.php';
-
-            // libero sentencia preparada
-            $stmt->close();
-
-            // cierro conexión
-            $this->db->close();
-
-            // cancelo ejecución programa
-            exit();
-        }
+        // Ejecutamos la sentencia
+        $stmt->execute();
+    } catch (mysqli_sql_exception $e) {
+        // Error de base de datos
+        include 'views/partials/errorDB.php';
+        $stmt->close();
+        $this->db->close();
+        exit();
     }
+}
 
     /*
         método: read()
@@ -170,7 +163,7 @@ class Class_tabla_corredores extends Class_conexion
             // Devolvemos objeto de la clase  mysqli_result
             $result = $stmt->get_result();
 
-            // Devolvemos un objeto de la clase alumno
+            // Devolvemos un objeto de la clase corredor
             return $result->fetch_object();
         } catch (mysqli_sql_exception $e) {
 
@@ -193,55 +186,19 @@ class Class_tabla_corredores extends Class_conexion
 
     /*
         método: update()
-        descripcion: permite actualizar los detalles de un libro en la tabla
+        descripcion: permite actualizar los detalles de un corredor en la tabla
 
         parámetros:
 
-            - $corredor - objeto de Class_alumno
-            - $id - id del alumno
+            - $corredor - objeto de Class_corredor
+            - $id - id del corredor
     */
-    public function update(Class_corredor $corredor, $id)
+    
+    public function update(Class_corredor $corredor)
     {
         try {
-
-            // Crear la sentencia preparada
-            $sql = "
-            UPDATE corredores SET 
-                    nombre = ?,
-                    apellidos = ?,
-                    ciudad = ?,
-                    fechaNacimiento = ?,
-                    sexo = ?,
-                    email = ?,
-                    dni = ?, 
-                    edad = ?,
-                    id_categoria = ?,
-                    id_club = ?
-            WHERE 
-                    id = ?
-            LIMIT 1                            
-            ";
-
-            // ejecuto la sentenecia preprada
-            $stmt = $this->db->prepare($sql);
-
-            // vinculación de parámetros
-            $stmt->bind_param(
-                'ssssssiiii',
-                $nombre,
-                $apellidos,
-                $ciudad,
-                $fechaNacimiento,
-                $sexo,
-                $email,
-                $dni,
-                $edad,
-                $id_categoria,
-                $id_club
-            );
-
-
-            // asignar valores
+            // Asignar los valores a las variables antes de la preparación de la consulta
+            $id = $corredor->id;
             $nombre = $corredor->nombre;
             $apellidos = $corredor->apellidos;
             $ciudad = $corredor->ciudad;
@@ -249,24 +206,60 @@ class Class_tabla_corredores extends Class_conexion
             $sexo = $corredor->sexo;
             $email = $corredor->email;
             $dni = $corredor->dni;
-            $edad = $corredor->edad;
             $id_categoria = $corredor->id_categoria;
             $id_club = $corredor->id_club;
 
-            // ejecutamos
-            $stmt->execute();
-        } catch (mysqli_sql_exception $e) {
+            // Crear la sentencia preparada
+            $sql = "
+        UPDATE corredores SET 
+                nombre = ?,
+                apellidos = ?,
+                ciudad = ?,
+                fechaNacimiento = ?,
+                sexo = ?,
+                email = ?,
+                dni = ?, 
+                id_categoria = ?,
+                id_club = ?
+        WHERE 
+                id = ?
+        LIMIT 1
+        ";
 
-            // error de  base dedatos
+            // Ejecuto la sentencia preparada
+            $stmt = $this->db->prepare($sql);
+
+            // Vinculación de parámetros
+            $stmt->bind_param(
+                'sssssssiii',
+                $nombre,
+                $apellidos,
+                $ciudad,
+                $fechaNacimiento,
+                $sexo,
+                $email,
+                $dni,
+                $id_categoria,
+                $id_club,
+                $id
+            );
+
+            // Ejecutamos
+            $stmt->execute();
+
+            // Cierro el statement
+            $stmt->close();
+        } catch (mysqli_sql_exception $e) {
+            // Error de base de datos
             include 'views/partials/errorDB.php';
 
-            // libero result
+            // Libero el result
             $stmt->close();
 
-            // cierro conexión
+            // Cierro la conexión
             $this->db->close();
 
-            // cancelo ejecución programa
+            // Cancelo la ejecución del programa
             exit();
         }
     }
@@ -280,19 +273,23 @@ class Class_tabla_corredores extends Class_conexion
     public function getCategorias()
     {
         $sql = "
-            SELECT 
-                    id, 
-                    nombreCorto as categoria
-            FROM 
-                    categorias
-            ORDER BY
-                    nombreCorto ASC
-        ";
+        SELECT 
+            id, 
+            nombre as categoria
+        FROM 
+            categorias
+        ORDER BY
+            nombre ASC
+    ";
 
         $result = $this->db->query($sql);
 
-        // devuelvo todos los valores de la  tabla clubs
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $categorias = [];
+        while ($row = $result->fetch_assoc()) {
+            $categorias[$row['id']] = $row['categoria'];
+        }
+
+        return $categorias;
     }
 
 
@@ -307,17 +304,21 @@ class Class_tabla_corredores extends Class_conexion
         $sql = "
             SELECT 
                     id, 
-                    nombreCorto as club
+                    nombre as club
             FROM 
                     clubs
             ORDER BY
-                    nombreCorto ASC
+                    nombre ASC
         ";
 
         $result = $this->db->query($sql);
 
-        // devuelvo todos los valores de la  tabla clubs
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $clubs = [];
+        while ($row = $result->fetch_assoc()) {
+            $clubs[$row['id']] = $row['club'];
+        }
+
+        return $clubs;
     }
 
     /*
@@ -335,32 +336,162 @@ class Class_tabla_corredores extends Class_conexion
     {
         try {
 
+            $criterios_validos = [
+                1 => 'corredores.id',  
+                2 => 'corredores.nombre',    
+                3 => 'corredores.apellidos',     
+                4 => 'corredores.ciudad',       
+                5 => 'corredores.email',      
+                6 => 'corredores.edad',       
+                7 => 'categoria',       
+                8 => 'club',     
+            ];
+
+            $campo_criterio = $criterios_validos[$criterio];
+
             // sentencia sql
             $sql = "
-            select 
+            SELECT 
                 corredores.id,
-                corredores.nombre, 
-                corredores.apellidos,
+                concat_ws(', ', corredores.apellidos, corredores.nombre) as corredor,
                 corredores.ciudad,
-                corredores.fechaNacimiento,
-                corredores.sexo
+                corredores.sexo,
                 corredores.email,
                 corredores.dni,
-                timestampdiff(YEAR, corredores.fechaNacimiento, now()) as edad,
-                categorias.nombreCorto as categoria
-                clubs.nombreCorto as club
+                corredores.edad,
+                categorias.nombre AS categoria,
+                clubs.nombre AS club
             FROM 
                 corredores 
-            INNER JOIN
-                categorias
-            ON corredores.id_categoria = categorias.id
-            ORDER BY corredores.id
-            INNER JOIN
-                clubs
-            ON corredores.id_clubs = clubs.id
-            ORDER BY corredores.id    
+            INNER JOIN categorias ON corredores.id_categoria = categorias.id 
+            INNER JOIN clubs ON corredores.id_club = clubs.id
+ 
+            ORDER BY $campo_criterio
 
         ";
+
+            // ejecuto prepare
+            $stmt = $this->db->prepare($sql);
+
+            // ejecutamos
+            $stmt->execute();
+
+            // Devolvemos objeto de la clase mysqli_result
+            $result = $stmt->get_result();
+
+            // Devolvemos mysqli_result
+            return $result;
+        } catch (mysqli_sql_exception $e) {
+
+            // error de  base dedatos
+            include 'views/partials/errorDB.php';
+
+            // libero stmt
+            $stmt->close();
+
+            // libero result
+            $result->close();
+
+            // cierro conexión
+            $this->db->close();
+
+            // cancelo ejecución programa
+            exit();
+        }
+    }
+
+    /*
+        método: filter()
+        descripcion: devuelve un objeto de la clase mysqli_result con los 
+        detalles de los corredores según la expresión.
+
+        Parámetros:
+
+            - expresion: expresión por la que buscaré un dato del corredor
+*/
+
+public function filter($expresion)
+{
+    try {
+     
+        $sql = "
+        SELECT 
+            corredores.id,
+            concat_ws(', ', corredores.apellidos, corredores.nombre) as corredor,
+            corredores.ciudad,
+            corredores.sexo,
+            corredores.email,
+            corredores.dni,
+            corredores.edad,
+            categorias.nombre AS categoria,
+            clubs.nombre AS club
+        FROM 
+            corredores 
+        INNER JOIN categorias ON corredores.id_categoria = categorias.id 
+        INNER JOIN clubs ON corredores.id_club = clubs.id
+        WHERE 
+            concat_ws(', ', corredores.apellidos, corredores.nombre) LIKE ? OR 
+            corredores.ciudad LIKE ? OR
+            corredores.sexo LIKE ? OR
+            corredores.email LIKE ? OR
+            corredores.dni LIKE ? OR
+            corredores.edad LIKE ? OR 
+            categorias.nombre LIKE ? OR 
+            clubs.nombre LIKE ? 
+        ORDER BY 
+            corredores.id
+        ";
+
+        // Preparamos la consulta
+        $stmt = $this->db->prepare($sql);
+
+        $expresion = '%' . $expresion . '%';
+
+        $stmt->bind_param('ssssssss', $expresion, $expresion, $expresion, $expresion,$expresion, $expresion, $expresion, $expresion);
+
+        // Ejecutamos la consulta
+        $stmt->execute();
+
+        // Devolvemos el objeto mysqli_result
+        $result = $stmt->get_result();
+
+        // Devolvemos el resultado
+        return $result;
+
+    } catch (mysqli_sql_exception $e) {
+        // Manejo de errores de base de datos
+        include 'views/partials/errorDB.php';
+
+        // Liberamos recursos
+        $stmt->close();
+        if (isset($result)) $result->close();
+
+        // Cerramos la conexión
+        $this->db->close();
+
+        // Terminamos la ejecución del programa
+        exit();
+    }
+}
+
+    /*
+        método: delete()
+        descripcion: borra un objeto de la clase corredor mediante el id
+
+        Parámetros:
+
+            - id: id del corredor que se quiere eliminar
+    */
+
+    public function delete(int $id)
+    {
+        try {
+
+            // Iniciar transacción
+            $this->db->begin_transaction();
+
+            // primera sentencia sql
+            $sql = "DELETE FROM registros WHERE id_corredor = ? LIMIT 1";
 
             // ejecuto prepare
             $stmt = $this->db->prepare($sql);
@@ -368,141 +499,13 @@ class Class_tabla_corredores extends Class_conexion
             // vincular parámetros
             $stmt->bind_param(
                 'i',
-                $criterio
+                $id
             );
 
             // ejecutamos
             $stmt->execute();
 
-            // Devolvemos objeto de la clase  mysqli_result
-            $result = $stmt->get_result();
-
-            // Devolvemos mysqli_result
-            return $result;
-        } catch (mysqli_sql_exception $e) {
-
-            // error de  base dedatos
-            include 'views/partials/errorDB.php';
-
-            // libero stmt
-            $stmt->close();
-
-            // libero result
-            $result->close();
-
-            // cierro conexión
-            $this->db->close();
-
-            // cancelo ejecución programa
-            exit();
-        }
-    }
-
-    /*
-        método: order()
-        descripcion: devuelve un objeto de la clase mysqli_result con los 
-        detalles de los corredores  ordenados por un criterio.
-
-        Parámetros:
-
-            - criterio: posición de la columna en la tabla corredores
-                        por la que quiero ordenar
-    */
-
-    public function filter($expresion)
-    {
-        try {
-
-            // sentencia sql
-            $sql = "
-            select 
-                corredores.id,
-                corredores.nombre, 
-                corredores.apellidos,
-                corredores.email,
-                corredores.telefono,
-                corredores.nacionalidad,
-                corredores.dni,
-                timestampdiff(YEAR, corredores.fechaNac, now()) as edad,
-                cursos.nombreCorto as curso
-            FROM 
-                corredores 
-            INNER JOIN
-                cursos
-            ON corredores.id_curso = cursos.id
-            WHERE 
-            CONCAT_WS(' ',
-                        corredores.id, 
-                        corredores.nombre,
-                        corredores.apellidos, 
-                        corredores.email, 
-                        corredores.telefono, 
-                        corredores.nacionalidad, 
-                        corredores.dni, 
-                        TIMESTAMPDIFF(YEAR, corredores.fechaNac, NOW()),
-                        corredores.fechaNac, 
-                        cursos.nombreCorto) 
-            LIKE ?
-
-            ORDER BY corredores.id
-        ";
-
-            // ejecuto prepare
-            $stmt = $this->db->prepare($sql);
-
-            // arreglamos expresión para operador like
-            $expresion = '%' . $expresion . '%';
-
-            // vincular parámetros
-            $stmt->bind_param(
-                's',
-                $expresion
-            );
-
-            // ejecutamos
-            $stmt->execute();
-
-            // Devolvemos objeto de la clase  mysqli_result
-            $result = $stmt->get_result();
-
-            // Devolvemos mysqli_result
-            return $result;
-
-        } catch (mysqli_sql_exception $e) {
-
-            // error de  base dedatos
-            include 'views/partials/errorDB.php';
-
-            // libero stmt
-            $stmt->close();
-
-            // libero result
-            $result->close();
-
-            // cierro conexión
-            $this->db->close();
-
-            // cancelo ejecución programa
-            exit();
-        }
-    }
-
-    /*
-        método: order()
-        descripcion: devuelve un objeto de la clase mysqli_result con los 
-        detalles de los corredores ordenados por un criterio.
-
-        Parámetros:
-
-            - criterio: posición de la columna en la tabla corredores
-                        por la que quiero ordenar
-    */
-
-    public function delete(int $id)
-    {
-        try {
-
-            // sentencia sql
+            // segunda sentencia sql
             $sql = "DELETE FROM corredores WHERE id = ? LIMIT 1";
 
             // ejecuto prepare
@@ -517,11 +520,10 @@ class Class_tabla_corredores extends Class_conexion
             // ejecutamos
             $stmt->execute();
 
-            // Devolvemos objeto de la clase  mysqli_result
-            $result = $stmt->get_result();
+            // Confirmar transacción
+            $this->db->commit();
 
-            // Devolvemos mysqli_result
-            return $result;
+
 
         } catch (mysqli_sql_exception $e) {
 

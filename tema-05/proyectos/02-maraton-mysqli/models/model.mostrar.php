@@ -35,4 +35,3 @@ $club_corredor = $clubs[$corredor->id_club];
 
 # Forma alternativa por la propiedad de no encapsulamiento
 // $libro = $obj_tabla_libros->tabla[$indice];
-

@@ -9,14 +9,14 @@
             - id del corredor
     */
 
-    # Cargamos el id del alumno que vamos a editar
+    # Cargamos el id del corredor que vamos a editar
     $id = $_GET['id'];
 
-    # Creo un objeto de la clase tabla alumnos
+    # Creo un objeto de la clase tabla corredores
     $tabla_corredores = new Class_tabla_corredores();
 
     # Cargo tabla de categorías
-    $categorias = $tabla_corredores->getCorredores();
+    $categorias = $tabla_corredores->getCategorias();
 
     # Cargo tabla de cursos
     $clubs = $tabla_corredores->getClubs();
@@ -24,5 +24,3 @@
     # Obtener los detalles del corredor 
     // objeto de la clase corredor
     $corredor = $tabla_corredores->read($id);
-
-   

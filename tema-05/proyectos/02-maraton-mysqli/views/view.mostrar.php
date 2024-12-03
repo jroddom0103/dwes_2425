@@ -72,13 +72,13 @@
             <!-- Categoría -->
             <div class="mb-3">
                 <label for="categoria" class="form-label">Categoría</label>
-                <input type="text" class="form-control" name="categoria" value="<?= implode($categoria_corredor) ?>" readonly>
+                <input type="text" class="form-control" name="categoria" value="<?= $categoria_corredor ?>" readonly>
             </div>
 
             <!-- Clubs -->
             <div class="mb-3">
                 <label for="club" class="form-label">Clubs</label>
-                <input type="text" class="form-control" name="club" value="<?= implode($club_corredor) ?>" readonly>
+                <input type="text" class="form-control" name="club" value="<?= $club_corredor ?>" readonly>
             </div>
 
             <!-- botones de acción -->

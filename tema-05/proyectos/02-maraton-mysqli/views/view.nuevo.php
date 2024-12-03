@@ -6,7 +6,7 @@
     <title>Nuevo Corredor - BBDD maratoon </title>
 
     <style>
-        #cajaSexo{
+        #cajaSexo {
             border: gray 2px solid;
             padding: 10px;
         }
@@ -63,7 +63,7 @@
                         <label class="form-check-label" for="mujer">Mujer</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" id="sinEspecificar" value="N">
+                        <input class="form-check-input" type="radio" name="sexo" id="sinEspecificar" value="">
                         <label class="form-check-label" for="sinEspecificar">Sin especificar</label>
                     </div>
                 </div>
@@ -87,10 +87,9 @@
                 <label for="club" class="form-label">Categoría</label>
                 <select class="form-select" name="id_categoria">
                     <option selected disabled>Seleccione categoría</option>
-                    <!-- mostrar lista cucrsos -->
-                    <?php foreach ($categorias as $data): ?>
-                        <option value="<?= $data['id'] ?>">
-                            <?= $data['categoria'] ?>
+                    <?php foreach ($categorias as $id => $nombre): ?>
+                        <option value="<?= $id ?>">
+                            <?= $nombre ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -101,14 +100,14 @@
                 <label for="club" class="form-label">Club</label>
                 <select class="form-select" name="id_club">
                     <option selected disabled>Seleccione club</option>
-                    <!-- mostrar lista cucrsos -->
-                    <?php foreach ($clubs as $data): ?>
-                        <option value="<?= $data['id'] ?>">
-                            <?= $data['club'] ?>
+                    <?php foreach ($clubs as $id => $nombre): ?>
+                        <option value="<?= $id ?>">
+                            <?= $nombre ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
             </div>
+
 
             <!-- botones de acción -->
             <a class="btn btn-secondary" href="index.php" role="button">Cancelar</a>

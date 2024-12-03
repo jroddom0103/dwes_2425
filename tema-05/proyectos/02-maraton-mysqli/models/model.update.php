@@ -51,4 +51,4 @@ $corredor = new Class_corredor(
 $corredores = new Class_tabla_corredores();
 
 # Llamo al método update de Class_tabla_corredores
-$corredores->update($corredor, $id);
+$corredores->update($corredor);

@@ -1,13 +1,12 @@
 <?php
 
 /*
-    archivo:class.corredor.php
-    titulo: define la clase corredor sin encapsulamiento
+    archivo: class.corredor.php
+    título: define la clase corredor sin encapsulamiento
 */
 
 class Class_corredor
 {
-
     public $id;
     public $nombre;
     public $apellidos;
@@ -19,7 +18,6 @@ class Class_corredor
     public $edad;
     public $id_categoria;
     public $id_club;
-
 
     public function __construct(
         $id = null,
@@ -42,18 +40,17 @@ class Class_corredor
         $this->sexo = $sexo;
         $this->email = $email;
         $this->dni = $dni;
-        $this->edad = $edad;
+        $this->edad = null; 
         $this->id_categoria = $id_categoria;
         $this->id_club = $id_club;
     }
 
-    public function edad()
+    // Método para calcular la edad
+    public function calcularEdad()
     {
         $fechaActual = new DateTime(); // Fecha actual
         $fechaNacimiento = new DateTime($this->fechaNacimiento); // Fecha de nacimiento
         $edad = $fechaNacimiento->diff($fechaActual); // Diferencia entre las fechas
         return $edad->y; // Devuelve solo los años
-
     }
 }
-

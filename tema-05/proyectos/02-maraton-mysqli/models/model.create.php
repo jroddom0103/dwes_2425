@@ -37,7 +37,7 @@ $corredor = new Class_corredor(
     $id_club
 );
 
-# Añadimos alumno a la tabla
+# Añadimos corredor a la tabla
 $corredores = new Class_tabla_corredores();
 
 $corredores->create($corredor);
