@@ -23,13 +23,17 @@ class Class_tabla_clientes extends Class_conexion
             $sql = "
             select 
                 clientes.id,
-                concat_ws(' ,', clientes.apellidos, clientes.nombre) cliente,
+                concat_ws(', ', clientes.apellidos, clientes.nombre) cliente,
                 clientes.telefono,
                 clientes.ciudad,
                 clientes.dni,
-                clientes.email
+                clientes.email,
+                SUM(cuentas.saldo) saldo
             FROM 
                 clientes 
+                LEFT JOIN
+                cuentas ON cuentas.id_cliente = clientes.id
+            GROUP BY clientes.id    
             ORDER BY clientes.id
         ";
 
@@ -39,18 +43,17 @@ class Class_tabla_clientes extends Class_conexion
 
 
             // establezco tipo de fetch
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Class_cliente');
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
 
             // ejecuto 
             $stmt->execute();
-
 
             // devuelvo objeto clase pdostatement
             return $stmt;
 
         } catch (PDOException $e) {
             //error de base de datos
-            include '/views/partials/errorDB.php';
+            include 'views/partials/errorDB.php';
 
             //libero pdostatement
             $stmt = null;
@@ -67,71 +70,58 @@ class Class_tabla_clientes extends Class_conexion
 
     /*
         método: create()
-        descripcion: permite añadir un objeto de la clase alumno a la tabla
+        descripcion: permite añadir un objeto de la clase cliente a la tabla
         
         parámetros:
 
-            - $alumno - objeto de la clase alumno
+            - $cliente - objeto de la clase cliente
 
     */
-    public function create(Class_alumno $alumno)
+    public function create(Class_cliente $cliente)
     {
         try {
-            // Crear la sentencia preparada
-            $sql = "
-        INSERT INTO 
+        // Crear la sentencia preparada
+        $sql = "
+            INSERT INTO 
             clientes( 
-                    nombre,
-                    apellidos,
-                    email,
-                    telefono,
-                    nacionalidad,
-                    dni, 
-                    fechaNac,
-                    id_curso
-                   )
-        VALUES    (?, ?, ?, ?, ?, ?, ?, ?)                            
+                apellidos,
+                nombre,
+                telefono,
+                ciudad,
+                dni,
+                email
+            )
+         VALUES    (
+                :apellidos,
+                :nombre,
+                :telefono,
+                :ciudad,
+                :dni,
+                :email
+            )                            
         ";
 
-            // ejecuto la sentenecia preprada
-            $stmt = $this->db->prepare($sql);
+        // Objeto de la clase pdostatement
+        $stmt = $this->pdo->prepare($sql);
 
-            // vinculación de parámetros
-            $stmt->bind_param(
-                'sssisisi',
-                $nombre,
-                $apellidos,
-                $email,
-                $telefono,
-                $nacionalidad,
-                $dni,
-                $fechaNac,
-                $id_curso
-            );
+        // vinculación de parámetros con las propiedades del objeto
+        $stmt->bindParam(':apellidos', $cliente->apellidos, PDO::PARAM_STR, 45);
+        $stmt->bindParam(':nombre', $cliente->nombre, PDO::PARAM_STR, 20);
+        $stmt->bindParam(':telefono', $cliente->telefono, PDO::PARAM_STR, 9);
+        $stmt->bindParam(':ciudad', $cliente->ciudad, PDO::PARAM_STR, 20);
+        $stmt->bindParam(':dni', $cliente->dni, PDO::PARAM_STR, 9);
+        $stmt->bindParam(':email', $cliente->email, PDO::PARAM_STR, 45);
 
-            // asignar valores
-            $nombre = $alumno->nombre;
-            $apellidos = $alumno->apellidos;
-            $email = $alumno->email;
-            $telefono = $alumno->telefono;
-            $nacionalidad = $alumno->nacionalidad;
-            $dni = $alumno->dni;
-            $fechaNac = $alumno->fechaNac;
-            $id_curso = $alumno->id_curso;
+        // ejecutamos
+        $stmt->execute();
 
-            // ejecutamos
-            $stmt->execute();
-
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
 
             //error de base de datos
-            include '/views/partials/errorDB.php';
-
-            //libero result
-            $result->close();
+            include 'views/partials/errorDB.php';
 
             //cierro conexión
-            $this->db->close();
+            $this->pdo = null;
 
             //cancelo ejecución programa
             exit();
@@ -141,49 +131,45 @@ class Class_tabla_clientes extends Class_conexion
 
     /*
         método: read()
-        descripcion: permite obtener el objeto de la clase alumno a partir del id del alumno 
+        descripcion: permite obtener el objeto de la clase cliente a partir del id del cliente 
 
         parámetros:
 
-            - $id - id de la tabla
+            - $id - id del cliente
     */
     public function read($id)
     {
         try {
             // Crear la sentencia preparada
-            $sql = "SELECT * FROM clientes WHERE id = ? LIMIT 1";
+            $sql = "SELECT
+                        id, apellidos, nombre, telefono, ciudad, dni,  email
+                    FROM clientes WHERE id = :id LIMIT 1";
 
             // Creo la sentencia preparada objeto clase mysqli_stmt
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
 
             // vinculación de parámetros
-            $stmt->bind_param(
-                'i',
-                $id
-            );
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // establecemos el tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
 
             // ejecutamos
             $stmt->execute();
 
-            // Devolvemos objeto de la clase mysqli_result
-            $result = $stmt->get_result();
+            // Devolvemos objeto de la clase Class_cliente
+            return $stmt->fetch();
 
-            // Devolvemos un objeto de la clase alumno
-            return $result->fetch_object();
-
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
 
             //error de base de datos
             include '/views/partials/errorDB.php';
 
-            //libero result
-            $result->close();
-
             //libero stmt
-            $stmt->close();
+            $stmt = null;
 
             //cierro conexión
-            $this->db->close();
+            $this->db = null;
 
             //cancelo ejecución programa
             exit();
@@ -192,59 +178,43 @@ class Class_tabla_clientes extends Class_conexion
 
     /*
         método: update()
-        descripcion: permite actualizar los detalles de un alumno en la tabla
+        descripcion: permite actualizar los detalles de un cliente en la tabla
 
         parámetros:
 
-            - $alumno - objeto de la clase alumno
+            - $cliente - objeto de la clase cliente
             - $id - id 
     */
 
-    public function update(Class_alumno $alumno, $id)
+    public function update(Class_cliente $cliente, $id)
     {
         try {
             // sentencia
             $sql = "
         UPDATE clientes
         SET 
-        nombre =?,
-        apellidos =?,
-        email =?,
-        telefono =?,
-        nacionalidad =?,
-        dni =?,
-        fechaNac =?,
-        id_curso =?
-        WHERE id =?
+            apellidos = :apellidos,
+            nombre = :nombre,
+            telefono = :telefono,    
+            ciudad = :ciudad,
+            dni = :dni,
+            email = :email,
+            update_at = CURRENT_TIMESTAMP
+        WHERE 
+            id = :id
         LIMIT 1
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
 
             // vinculación de parámetros
-            $stmt->bind_param(
-                'sssissssi',
-                $nombre,
-                $apellidos,
-                $email,
-                $telefono,
-                $nacionalidad,
-                $dni,
-                $fechaNac,
-                $id_curso,
-                $id
-            );
-
-
-            // asignar valores
-            $nombre = $alumno->nombre;
-            $apellidos = $alumno->apellidos;
-            $email = $alumno->email;
-            $telefono = $alumno->telefono;
-            $nacionalidad = $alumno->nacionalidad;
-            $dni = $alumno->dni;
-            $fechaNac = $alumno->fechaNac;
-            $id_curso = $alumno->id_curso;
+            $stmt->bindParam(':apellidos', $cliente->apellidos, PDO::PARAM_STR, 45);
+            $stmt->bindParam(':nombre', $cliente->nombre, PDO::PARAM_STR, 20);
+            $stmt->bindParam(':telefono', $cliente->telefono, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':ciudad', $cliente->ciudad, PDO::PARAM_STR, 20);
+            $stmt->bindParam(':dni', $cliente->dni, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':email', $cliente->email, PDO::PARAM_STR, 45);
+            $stmt->bindParam(':id',$id,PDO::PARAM_INT);
 
             // Ejecuto la consulta
             $stmt->execute();
@@ -252,16 +222,14 @@ class Class_tabla_clientes extends Class_conexion
             // Devuelvo true si todo salió bien
             return true;
 
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
             //error de base de datos
             include '/views/partials/errorDB.php';
 
-            $result->close();
-
-            $stmt->close();
+            $stmt = null;
 
             //cierro conexión
-            $this->db->close();
+            $this->pdo = null;
 
             //cancelo ejecución programa
             exit();
@@ -270,44 +238,53 @@ class Class_tabla_clientes extends Class_conexion
 
     /*
         método: delete()
-        descripcion: permite eliminar un libro de la tabla
+        descripcion: permite eliminar un cliente de la tabla
 
         parámetros:
 
-            - $indice - índice de la tabla en la que se encuentra el libro
+            - $id - id de la tabla en la que se encuentra el cliente
     */
-    public function delete($indice)
+    public function delete($id)
     {
-        unset($this->tabla[$indice]);
-    }
-
-    /*
-        getCursos()
-
-        Método que me devuelve todos los cursos en un array assoc de cursos
-    */
-
-    public function getCursos()
-    {
-        $sql = "
-            SELECT 
-                    id, 
-                    nombreCorto as curso
-            FROM 
-                    cursos
-            ORDER BY
-                    nombreCorto ASC
+        try {
+            // sentencia
+            $sql = "
+        DELETE FROM clientes
+        WHERE 
+            id = :id
         ";
 
-        $result = $this->db->query($sql);
+            $stmt = $this->pdo->prepare($sql);
 
-        // devuelvo todos los valores de la  tabla cursos
-        return $result->fetch_all(MYSQLI_ASSOC);
+            // vinculación de parámetros
+            $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+
+            // Ejecuto la consulta
+            $stmt->execute();
+
+            // Devuelvo true si todo salió bien
+            return true;
+
+        } catch (PDOException $e) {
+
+            //error de base de datos
+            include '/views/partials/errorDB.php';
+
+            $result->close();
+
+            $stmt = null;
+
+            //cierro conexión
+            $this->pdo = null;
+
+            //cancelo ejecución programa
+            exit();
+        }
     }
 
     /*
        método: order()
-       descripcion: devuelve un objeto de la clase mysqli_result con los 
+       descripcion: devuelve un objeto de la clase class_tabla_clientes con los 
        detalles de los clientes ordenador por un criterio.
 
        Parámetros:
@@ -322,55 +299,46 @@ class Class_tabla_clientes extends Class_conexion
 
             // sentencia
             $sql = "
-            select 
-                clientes.id,
-                clientes.nombre, 
-                clientes.apellidos,
-                clientes.email,
+            clientes.id,
+                concat_ws(', ', clientes.apellidos, clientes.nombre) cliente,
                 clientes.telefono,
-                clientes.nacionalidad,
+                clientes.ciudad,
                 clientes.dni,
-                timestampdiff(YEAR, clientes.fechaNac, now()) as edad,
-                cursos.nombreCorto as curso
+                clientes.email,
+                SUM(cuentas.saldo) saldo
             FROM 
                 clientes 
-            INNER JOIN
-                cursos
-            ON clientes.id_curso = cursos.id
-            ORDER BY ?
+            ORDER BY :criterio
         ";
 
             // ejecuto comando sql
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
 
             // vinculación de parámetros
-            $stmt->bind_param(
-                'i',
-                $criterio
-            );
+            $stmt->bindParam(':criterio',$criterio,PDO::PARAM_STR);
 
-            // ejecutamos
+
+            // establezco tipo de fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+
+            // ejecuto 
             $stmt->execute();
 
-            // Devolvemos objeto de la clase mysqli_result
-            $result = $stmt->get_result();
+            // devuelvo objeto clase pdostatement
+            return $stmt;
 
-            // Devolvemos mysqli_result
-            return $result;
-
-
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
             //error de base de datos
             include '/views/partials/errorDB.php';
 
             //libero stmt
-            $stmt->close();
+            $stmt = null;
 
             //libero result
             $result->close();
 
             //cierro conexión
-            $this->db->close();
+            $this->pdo = null;
 
             //cancelo ejecución programa
             exit();
@@ -418,11 +386,11 @@ class Class_tabla_clientes extends Class_conexion
 
             // Ejecutar la consulta
             $stmt->execute();
-            
+
             $result = $stmt->get_result();
 
             // Crear un nuevo objeto de la clase para almacenar los datos
-            
+
 
             // Recorrer los resultados y convertirlos en objetos de Class_alumno
             while ($row = $result->fetch_assoc()) {
@@ -464,6 +432,4 @@ class Class_tabla_clientes extends Class_conexion
             exit();
         }
     }
-
-
 }

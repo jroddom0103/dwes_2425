@@ -2,15 +2,15 @@
 
 /*
     Modelo: model.index.php
-    Descripción: muestra los alumnos
+    Descripción: muestra los clientes
 
 */
 
 # Símbolo monetario local
 setlocale(LC_MONETARY, "es_ES");
 
-# Creo un objeto de la clase tabla alumnos
-$tabla_alumnos = new Class_tabla_alumnos();
+# Creo un objeto de la clase tabla clientes
+$conexion = new Class_tabla_clientes();
 
-# Cargo tabla de alumnos
-$alumnos = $tabla_alumnos->getAlumnos();
+# Obtengo un objeto de la clase pdostatement con los detalles de clientes
+$stmt_clientes = $conexion->getClientes();

@@ -2,54 +2,52 @@
 
 /*
     Modelo: model.update.php
-    Descripción: actualiza los datos del alumno
+    Descripción: actualiza los datos del cliente
 
      Métod POST:
 
-        - Los detalles del alumno
+        - nombre
+        - apellidos
+        - ciudad
+        - telefono
+        - dni
+        - email
     
     Método GET:
 
-        - id del alumno
+        - id del cliente
 */
 
 # Símbolo monetario local
 setlocale(LC_MONETARY, "es_ES");
 
-# Cargo el id del alumno
+# Cargo el id del cliente
 $id = $_GET['id'];
 
-# Cargo los detalles del alumno
+# Cargo los detalles del formulario
 $nombre = $_POST['nombre'];
 $apellidos = $_POST['apellidos'];
-$fechaNac = $_POST['fechaNac'];
-$email = $_POST['email'];
+$ciudad = $_POST['ciudad'];
 $telefono = $_POST['telefono'];
-$nacionalidad = $_POST['nacionalidad'];
 $dni = $_POST['dni'];
-$id_curso = $_POST['id_curso'];
+$email = $_POST['email'];
 
 # Validación
 
-# Creamos objeto de la clase Class_alumno
-$alumno = new Class_alumno (
+# Creamos objeto de la clase Class_cliente
+$cliente = new Class_cliente(
     $id,
-    $nombre,
     $apellidos,
-    $email,
+    $nombre,
     $telefono,
-    $nacionalidad,
+    $ciudad,
     $dni,
-    $fechaNac, 
-    $id_curso
+    $email,
 );
 
 
-# Actualizo los detalles del alumno en la tabla
-$alumnos = new Class_tabla_alumnos();
+# Conecto con la base de datos gesbank
+$conexion = new Class_tabla_clientes();
 
-# Llamo al método update de Class_tabla_alumnos
-$alumnos->update($alumno, $id);
-
-# Redirecciono al controlador index
-header("location: index.php");
+# Llamo al método update de Class_tabla_clientes
+$conexion->update($cliente, $id);

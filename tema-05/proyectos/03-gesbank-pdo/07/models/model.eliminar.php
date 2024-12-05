@@ -1,28 +1,25 @@
 <?php
 
-    /*
-        modelo: model.eliminar.php
-        descripción: elimina un artículo de la tabla
-        
-        Método GET:
-
-            - indice: de la tabla donde se encuentra el artículo que voy a eliminar
-    */
-
-    # Cargamos el indice del artículo
-    $indice = $_GET['indice'];
-
-    # Creo un objeto de la clase tabla de artículos
-    $obj_tabla_articulos = new Class_tabla_articulos();
-
-    #  Cargo los datos de artículos
-    $obj_tabla_articulos->getDatos();
+/*
+    modelo: model.eliminar.php
+    descripción: elimina un cliente de la tabla
     
-    # Cargo el array de marcas - lista desplegable dinámica
-    $marcas = $obj_tabla_articulos->getMarcas();
+    Método GET:
 
-    # Obtener el objeto de la clase artículo correspondiente a ese índice
-    $obj_tabla_articulos->delete($indice);
+        - id: de la tabla donde se encuentra el cliente que voy a eliminar
+*/
 
-    # Obtengo la tabla de artículos actualizada para la vista
-    $array_articulos = $obj_tabla_articulos->getTabla();
+# Cargamos el id del cliente
+$id = $_GET['id'];
+
+# Creo un objeto de la clase tabla de clientes
+$conexion = new Class_tabla_clientes();
+
+#  Cargo los datos de clientes
+$conexion->getClientes();
+
+# Eliminar el objeto de la clase cliente correspondiente a ese id
+$conexion->delete($id);
+
+# Obtengo un objeto de la clase pdostatement con los detalles de clientes
+$stmt_clientes = $conexion->getClientes();

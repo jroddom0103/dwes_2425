@@ -1,22 +1,26 @@
 <?php
-    /*
-        controlador: eliminar.php
-        descripción: elimina un artículo de la tabla
+/*
+    controlador: eliminar.php
+    descripción: elimina un cliente por el id
 
-        parámetros:
+    parámetros:
 
-            - Método GET:
-                - indice - indice del artículo que voy a eliminar
-    */
+        - Método GET:
+            - id del cliente
+*/
 
-    # Clases
-    include 'class/class.articulo.php';
-    include 'class/class.tabla_articulos.php';
+# Archivos de configuración
+include 'config/configDB.php';
 
-    # Librerias
+# Clases
+include 'class/class.cliente.php';
+include 'class/class.conexion.php';
+include 'class/class.tabla_clientes.php';
 
-    # Model
-    include 'models/model.eliminar.php';
+# Librerias
 
-    # Vista
-    include 'views/view.index.php';
+# Model
+include 'models/model.eliminar.php';
+
+# Vista
+include 'views/view.index.php';

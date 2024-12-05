@@ -2,20 +2,20 @@
 
     /*
         controlador: create.php
-        descripción: añade nuevo alumno a la tabla
+        descripción: añade nuevo cliente a la tabla
 
         Método POST:
 
-            - detalles del alumno
+            - detalles del cliente
     */
 
     # Archivos de configuración
     include 'config/configDB.php';
 
     # Clases
-    include 'class/class.alumno.php';
+    include 'class/class.cliente.php';
     include 'class/class.conexion.php';
-    include 'class/class.tabla_alumnos.php';
+    include 'class/class.tabla_clientes.php';
 
     # Librerias
 

@@ -2,21 +2,21 @@
 
 /*
         controlador: update.php
-        descripción: actualiza los detalles de un alumno
+        descripción: actualiza los detalles de un cliente
     */
 
-    # Archivos de configuración
-    include 'config/configDB.php';
+# Archivos de configuración
+include 'config/configDB.php';
 
-    # Clases
-    include 'class/class.alumno.php';
-    include 'class/class.conexion.php';
-    include 'class/class.tabla_alumnos.php';
+# Clases
+include 'class/class.cliente.php';
+include 'class/class.conexion.php';
+include 'class/class.tabla_clientes.php';
 
-    # Librerias
+# Librerias
 
-    # Model
-    include 'models/model.update.php';
+# Model
+include 'models/model.update.php';
 
-    # Redirecciono index
-    
+# Redirecciono controlador index
+header("location: index.php");

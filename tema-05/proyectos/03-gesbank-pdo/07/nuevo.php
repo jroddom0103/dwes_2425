@@ -2,16 +2,16 @@
 
 /*
         controlador: nuevo.php
-        descripción: muestra formulario añadir alumno
+        descripción: muestra formulario añadir cliente
     */
 
     # Archivos de configuración
     include 'config/configDB.php';
 
     # Clases
-    include 'class/class.alumno.php';
+    include 'class/class.cliente.php';
     include 'class/class.conexion.php';
-    include 'class/class.tabla_alumnos.php';
+    include 'class/class.tabla_clientes.php';
 
     # Librerias
 

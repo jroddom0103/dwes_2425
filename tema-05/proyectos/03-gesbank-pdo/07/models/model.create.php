@@ -1,43 +1,45 @@
 <?php
-    /*
-        apellidos: model.create.php
-        descripción: añade el nuevo alumno a la tabla
+/*
+    apellidos: model.create.php
+    descripción: añade el nuevo alumno a la tabla
+    
+    Métod POST (alumno):
+        - nombre
+        - apellidos
+        - ciudad
+        - telefono
+        - dni
+        - email
         
-        Métod POST (alumno):
-            - id
-            
-    */
+*/
 
-    # Cargo los detalles del  formulario
-  
-    $nombre = $_POST['nombre'];
-    $apellidos = $_POST['apellidos'];
-    $fechaNac = $_POST['fechaNac'];
-    $email = $_POST['email'];
-    $telefono = $_POST['telefono'];
-    $nacionalidad = $_POST['nacionalidad'];
-    $dni = $_POST['dni'];
-    $id_curso = $_POST['id_curso'];
+# Cargo los detalles del  formulario
 
-    # Validación
+$nombre = $_POST['nombre'];
+$apellidos = $_POST['apellidos'];
+$ciudad = $_POST['ciudad'];
+$telefono = $_POST['telefono'];
+$dni = $_POST['dni'];
+$email = $_POST['email'];
 
-    # Creamos objeto de la clase Class_alumno
-    $alumno = new Class_alumno (
-        null,
-        $nombre,
-        $apellidos,
-        $email,
-        $telefono,
-        $nacionalidad,
-        $dni,
-        $fechaNac, 
-        $id_curso
-    );
+# Validación
 
-    # Añadimos alumno a la tabla
-    $alumnos = new Class_tabla_alumnos();
+# Creamos objeto de la clase Class_cliente
+$cliente = new Class_cliente(
+    null,
+    $apellidos,
+    $nombre,
+    $telefono,
+    $ciudad,
+    $dni,
+    $email,
+);
 
-    $alumnos->create($alumno);
+# Añadimos alumno a la tabla
+$conexion = new Class_tabla_clientes();
 
-    # Redirecciono al controlador index
-    header("location: index.php");
+$conexion->create($cliente);
+
+# Vista
+# Redirecciono al controlador index
+header("location: index.php");
