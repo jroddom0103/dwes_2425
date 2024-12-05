@@ -1,8 +1,12 @@
 <?php
-
 /*
-    controlador: filtrar.php
-    descripción: muestra los clientes que cumplen una expresión de búsqueda
+    controlador: eliminar.php
+    descripción: elimina un cliente por el id
+
+    parámetros:
+
+        - Método GET:
+            - id del cliente
 */
 
 # Archivos de configuración
@@ -16,7 +20,7 @@ include 'class/class.tabla_clientes.php';
 # Librerias
 
 # Model
-include 'models/model.filtrar.php';
+include 'models/model.eliminar.php';
 
-# Redirecciono al controlador index
+# Vista
 include 'views/view.index.php';

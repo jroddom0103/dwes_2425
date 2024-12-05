@@ -1,9 +1,9 @@
 <?php
 
 /*
-    controlador: filtrar.php
-    descripción: muestra los clientes que cumplen una expresión de búsqueda
-*/
+        controlador: update.php
+        descripción: actualiza los detalles de un cliente
+    */
 
 # Archivos de configuración
 include 'config/configDB.php';
@@ -16,7 +16,7 @@ include 'class/class.tabla_clientes.php';
 # Librerias
 
 # Model
-include 'models/model.filtrar.php';
+include 'models/model.update.php';
 
-# Redirecciono al controlador index
-include 'views/view.index.php';
+# Redirecciono controlador index
+header("location: index.php");
