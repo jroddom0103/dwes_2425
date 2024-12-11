@@ -25,7 +25,7 @@
                         <th>Cliente de la cuenta</th>
                         <th>Fecha de alta</th>
                         <th>Fecha de último movimiento</th>
-                        <th class='text-center'>Número de movimientos</th>
+                        <th class='text-end'>Número de movimientos</th>
                         <th class='text-end'>Saldo</th>
                         <!-- columna de acciones -->
                         <th>Acciones</th>
@@ -39,9 +39,9 @@
                             <td><?= $cuenta->id ?></td>
                             <td><?= $cuenta->num_cuenta ?></td>
                             <td><?= $cuenta->cliente?></td>
-                            <td><?= $cuenta->fecha_alta ?></td>
-                            <td><?= $cuenta->fecha_ul_mov ?></td>
-                            <td class='text-center'><?= $cuenta->num_movtos ?></td>
+                            <td><?= date('d/m/y',strtotime($cuenta->fecha_alta)) ?></td>
+                            <td><?= date('d/m/y',strtotime($cuenta->fecha_ul_mov)) ?></td>
+                            <td class='text-end'><?= $cuenta->num_movtos ?></td>
                             <td class='text-end'><?= number_format($cuenta->saldo,2,',','.')?></td>
                             
                             <!-- Columna de acciones -->

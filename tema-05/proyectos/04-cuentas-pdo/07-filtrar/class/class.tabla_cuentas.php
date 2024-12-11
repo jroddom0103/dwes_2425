@@ -104,7 +104,7 @@ class Class_tabla_cuentas extends Class_conexion
             $stmt = $this->pdo->prepare($sql);
 
             // vinculación de parámetros con las propiedades del objeto
-            $stmt->bindParam(':num_cuenta', $cuenta->num_cuenta, PDO::PARAM_INT);
+            $stmt->bindParam(':num_cuenta', $cuenta->num_cuenta, PDO::PARAM_STR, 20);
             $stmt->bindParam(':id_cliente', $cuenta->id_cliente, PDO::PARAM_INT);
             $stmt->bindParam(':fecha_alta', $cuenta->fecha_alta, PDO::PARAM_STR);
             $stmt->bindParam(':fecha_ul_mov', $cuenta->fecha_ul_mov, PDO::PARAM_STR);
@@ -204,7 +204,7 @@ class Class_tabla_cuentas extends Class_conexion
             $stmt = $this->pdo->prepare($sql);
 
             // vinculación de parámetros
-            $stmt->bindParam(':num_cuenta', $cuenta->num_cuenta, PDO::PARAM_INT);
+            $stmt->bindParam(':num_cuenta', $cuenta->num_cuenta, PDO::PARAM_STR);
             $stmt->bindParam(':id_cliente', $cuenta->id_cliente, PDO::PARAM_INT);
             $stmt->bindParam(':saldo', $cuenta->saldo, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -447,5 +447,57 @@ class Class_tabla_cuentas extends Class_conexion
 
             exit();
         }
+    }
+
+    /*
+        método: getCuentas()
+        descripcion: devuelve un objeto de la clase pdostatement con los 
+        detalles de los cuentas
+    */
+
+    public function getClientes()
+    {
+        try {
+
+            // sentencia
+            $sql = "
+            SELECT 
+                id,
+                CONCAT_WS(', ', clientes.apellidos, clientes.nombre) AS cliente
+            FROM 
+                clientes
+            ORDER BY 
+                clientes.apellidos ASC;
+            ";
+
+            // ejecuto prepare
+            // obtengo objeto clase pdostatement
+            $stmt = $this->pdo->prepare($sql);
+
+            // establezco tipo de fetch
+            $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
+
+            // ejecuto 
+            $stmt->execute();
+
+            $clientes = $stmt->fetchAll();
+
+            // devuelvo objeto clase pdostatement
+            return $clientes;
+
+        } catch (PDOException $e) {
+            //error de base de datos
+            include 'views/partials/errorDB.php';
+
+            //libero pdostatement
+            $stmt = null;
+
+            //cierro conexión
+            $this->pdo = null;
+
+            //cancelo ejecución programa
+            exit();
+        }
+
     }
 }

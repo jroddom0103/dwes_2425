@@ -13,6 +13,9 @@
 
 $num_cuenta = $_POST['num_cuenta'];
 $id_cliente = $_POST['id_cliente'];
+$fecha_alta = $_POST['fecha_alta'];
+$fecha_ul_mov = $_POST['fecha_ul_mov'];
+$num_movtos = $_POST['num_movtos'];
 $saldo = $_POST['saldo'];
 
 # Validación
@@ -22,9 +25,9 @@ $cuenta = new Class_cuenta(
     null,
     $num_cuenta,
     $id_cliente,
-    date('Y-m-d H:i:s'),
-    null,
-    null,
+    $fecha_alta,
+    $fecha_ul_mov,
+    $num_movtos,
     $saldo,
 );
 

@@ -22,7 +22,7 @@
             <!-- Número de Cuenta-->
             <div class="mb-3">
                 <label for="num_cuenta" class="form-label">Número de Cuenta</label>
-                <input type="number" class="form-control" name="num_cuenta" value="<?=$cuenta->num_cuenta?>">
+                <input type="text" class="form-control" name="num_cuenta" value="<?=$cuenta->num_cuenta?>">
             </div>
             <!-- Saldo -->
             <div class="mb-3">
@@ -34,7 +34,7 @@
             <!-- botones de acción -->
             <a class="btn btn-primary" href="index.php" role="button">Cancelar</a>
             <button type="reset" class="btn btn-danger">Borrar</button>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
 
         </form>
 
