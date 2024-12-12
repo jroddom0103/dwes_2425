@@ -40,7 +40,6 @@ class Class_tabla_cuentas extends Class_conexion
             // obtengo objeto clase pdostatement
             $stmt = $this->pdo->prepare($sql);
 
-
             // establezco tipo de fetch
             $stmt->setFetchMode(PDO::FETCH_OBJ);
 
