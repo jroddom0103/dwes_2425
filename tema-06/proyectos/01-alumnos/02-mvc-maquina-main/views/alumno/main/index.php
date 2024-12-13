@@ -6,6 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    VISTA DE ALUMNOS
+    <?=$this->title?>
+    <?php var_dump($this->alumnos->fetchAll())?>
 </body>
 </html>

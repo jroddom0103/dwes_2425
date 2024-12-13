@@ -45,7 +45,7 @@ class alumnoModel extends Model
         $conexion = $this->db->connect();
 
         // ejecuto prepare 
-        $stmt = $conexion->prepare();
+        $stmt = $conexion->prepare($sql);
 
         // establezco el tipo de fetch
         $stmt->setFetchMode(PDO::FETCH_OBJ);
