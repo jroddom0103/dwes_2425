@@ -8,6 +8,13 @@ Class Alumno Extends Controller{
 
     }
 
+    /*
+        Método principal
+
+        Se carga siempre que la url contenga sólo el primer parámetro
+
+        url: /alumno
+    */
     public function render(){
 
         // Creo la propiedad title de la vista
@@ -18,6 +25,44 @@ Class Alumno Extends Controller{
 
         $this->view->render('alumno/main/index');
 
+    }
+
+    /*
+        Método nuevo()
+
+        Muestra el formulario que permite añadir nuevo alumno
+
+        url asociada: /alumno/nuevo
+    */
+    public function nuevo(){
+
+        // Creo la propiedad título
+        $this->view->title = "Nuevo Alumno - Gestión FP";
+
+        // Creo la propiedad cursos en la vista
+        $this->view->cursos =$this->model->get_cursos();
+
+        // Cargo la vista asociada a este método
+        $this->view->render('alumno/nuevo/index');
+    }
+
+    /*
+        Método create()
+
+        Permite añadir nuevo alumno
+
+        url asociada: /alumno/create
+        POST: detalles del alumno
+    */
+    public function create(){
+
+        
+
+        // Creo la propiedad cursos en la vista
+        $this->view->cursos =$this->model->get_cursos();
+
+        // Cargo la vista asociada a este método
+        $this->view->render('alumno/nuevo/index');
     }
 
 }

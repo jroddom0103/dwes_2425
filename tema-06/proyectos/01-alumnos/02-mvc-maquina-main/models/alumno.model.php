@@ -67,4 +67,48 @@ class alumnoModel extends Model
 
     }
 
+     /*
+        método: getCursos()
+        Entre los detalles de los cursos para generar lista desplegable
+        dinámica
+    */
+
+    public function get_cursos()
+    {
+
+        try {
+
+            $sql = "SELECT
+                id,
+                nombre as curso
+        from
+            cursos
+        ORDER BY 2";
+
+        // conectamos con la base de datos
+        $conexion = $this->db->connect();
+
+        // ejecuto prepare 
+        $stmt = $conexion->prepare($sql);
+
+        // establezco el tipo de fetch
+        $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
+
+        // ejecutamos 
+        $stmt->execute();
+
+        // devuelvo objeto pdostatement
+        return $stmt->fetchAll();
+
+        } catch (PDOException $e) {
+            
+            // error base de datos
+            require "template/partials/errorDB.partial.php";
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+
+    }
+
 }
