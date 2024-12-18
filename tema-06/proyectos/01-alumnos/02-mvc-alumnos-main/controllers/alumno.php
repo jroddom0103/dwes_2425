@@ -80,10 +80,8 @@ class Alumno extends Controller
 
         $this->model->create($alumno);
 
-        // Creo la propiedad alumnos para usar en la vista
-        $this->view->alumnos = $this->model->get();
-
-        $this->view->render('alumno/main/index');
+        // Redirecciona al main de alumno
+        header('location:'.URL.'alumno');
 
     }
 
