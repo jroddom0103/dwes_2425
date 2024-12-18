@@ -7,6 +7,8 @@ require_once 'libs/view.php';
 
 require_once 'libs/app.php';
 require_once 'config/config.php';
+
+require_once 'class/class.alumno.php';
 $app = new App();
 
 

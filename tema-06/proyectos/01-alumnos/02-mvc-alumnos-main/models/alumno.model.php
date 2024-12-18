@@ -116,11 +116,11 @@ class alumnoModel extends Model
     }
 
     /*
-        método: crearAlumno()
-        Crea un alumno con los datos introducidos en el formulario
+        método: create()
+        descripción: añade nuevo alumno
     */
 
-    public function crearAlumno(Class_alumno $alumno)
+    public function create(Class_alumno $alumno)
     {
 
         try {
@@ -138,12 +138,12 @@ class alumnoModel extends Model
             $stmt = $conexion->prepare($sql);
 
             // hago el bind_param
-            $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR);
-            $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR);
-            $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_INT);
-            $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR);
-            $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR);     
+            $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
+            $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_STR, 13);
+            $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR, 30);     
             $stmt->bindParam(':fechaNac', $alumno->fechaNac, PDO::PARAM_STR);
             $stmt->bindParam(':id_curso', $alumno->id_curso, PDO::PARAM_INT);
 

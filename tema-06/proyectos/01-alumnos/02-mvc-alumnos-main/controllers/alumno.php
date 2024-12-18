@@ -61,7 +61,6 @@ class Alumno extends Controller
     */
     public function create()
     {
-        require_once 'class/class.alumno.php';
 
         // Creo la propiedad title de la vista
         $this->view->title = "Home - Panel de control de Alumnos";
@@ -79,7 +78,7 @@ class Alumno extends Controller
         // Creamos un objeto de la clase alumno
         $alumno = new Class_alumno(null,$nombre,$apellidos,$email,$telefono,$nacionalidad,$dni,$fechaNac,$id_curso);
 
-        $this->model->crearAlumno($alumno);
+        $this->model->create($alumno);
 
         // Creo la propiedad alumnos para usar en la vista
         $this->view->alumnos = $this->model->get();
