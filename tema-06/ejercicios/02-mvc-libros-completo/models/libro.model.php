@@ -153,14 +153,14 @@ class libroModel extends Model
 
             $stmt = $conexion->prepare($sql);
 
-            $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_STR, 13);
-            $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':fechaNac', $alumno->fechaNac, PDO::PARAM_STR);
-            $stmt->bindParam(':id_curso', $alumno->id_curso, PDO::PARAM_INT);
+            $stmt->bindParam(':nombre', $libro->nombre, PDO::PARAM_STR, 30);
+            $stmt->bindParam(':apellidos', $libro->apellidos, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':email', $libro->email, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':telefono', $libro->telefono, PDO::PARAM_STR, 13);
+            $stmt->bindParam(':nacionalidad', $libro->nacionalidad, PDO::PARAM_STR, 30);
+            $stmt->bindParam(':dni', $libro->dni, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':fechaNac', $libro->fechaNac, PDO::PARAM_STR);
+            $stmt->bindParam(':id_curso', $libro->id_curso, PDO::PARAM_INT);
 
 
             // añado alumno
@@ -233,21 +233,21 @@ class libroModel extends Model
     /*
         método: update
 
-        descripción: actualiza los detalles de un alumno
+        descripción: actualiza los detalles de un libro
 
         @param:
-            - objeto de classAlumno
-            - id del alumno
+            - objeto de classLibro
+            - id del libro
     */
 
-    public function update(classAlumno $alumno, $id)
+    public function update(classLibro $libro, $id)
     {
 
         try {
 
             $sql = "
             
-            UPDATE alumnos
+            UPDATE libros
             SET
                     nombre = :nombre,
                     apellidos = :apellidos,
@@ -268,14 +268,14 @@ class libroModel extends Model
 
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':fechaNac', $alumno->fechaNac, PDO::PARAM_STR);
-            $stmt->bindParam(':id_curso', $alumno->id_curso, PDO::PARAM_INT);
+            $stmt->bindParam(':nombre', $libro->nombre, PDO::PARAM_STR, 30);
+            $stmt->bindParam(':apellidos', $libro->apellidos, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':email', $libro->email, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':telefono', $libro->telefono, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':nacionalidad', $libro->nacionalidad, PDO::PARAM_STR, 30);
+            $stmt->bindParam(':dni', $libro->dni, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':fechaNac', $libro->fechaNac, PDO::PARAM_STR);
+            $stmt->bindParam(':id_curso', $libro->id_curso, PDO::PARAM_INT);
 
             $stmt->execute();
         } catch (PDOException $e) {
@@ -346,31 +346,39 @@ class libroModel extends Model
                 timestampdiff(YEAR,  alumnos.fechaNac, NOW() ) edad,
                 cursos.nombreCorto curso
             FROM
-                alumnos
+                libros
             INNER JOIN
-                cursos
+                autores
             ON 
-                alumnos.id_curso = cursos.id
-            WHERE
-
-                CONCAT_WS(  ', ', 
-                            alumnos.id,
-                            alumnos.nombre,
-                            alumnos.apellidos,
-                            alumnos.email,
-                            alumnos.telefono,
-                            alumnos.poblacion,
-                            alumnos.nacionalidad,
-                            alumnos.dni,
-                            TIMESTAMPDIFF(YEAR, alumnos.fechaNac, now()),
-                            alumnos.fechaNac,
-                            cursos.nombreCorto,
-                            cursos.nombre) 
-                like :expresion
-
-            ORDER BY 
-                alumnos.id
-            
+                autores.id = libros.autor_id
+            INNER JOIN
+                editoriales
+            ON
+                editoriales.id = libros.editorial_id
+            INNER JOIN
+                generos
+            ON
+                FIND_IN_SET(generos.id, libros.generos_id) > 0
+            GROUP BY
+                libros.id
+            HAVING
+                CONCAT_WS(
+                    ', ',
+                    libros.id,
+                    libros.titulo,
+                    autor,
+                    editorial,
+                    generos_nombres,
+                    libros.stock,
+                    libros.precio,
+                    libros.fecha_edicion,
+                    libros.isbn
+                
+                
+                )            
+                LIKE :expresion
+            ORDER BY
+                libros.id               
             ";
 
             # Conectar con la base de datos
@@ -417,7 +425,7 @@ class libroModel extends Model
                 timestampdiff(YEAR,  alumnos.fechaNac, NOW() ) edad,
                 cursos.nombreCorto curso
             FROM
-                alumnos
+                libros
             INNER JOIN
                 cursos
             ON 
