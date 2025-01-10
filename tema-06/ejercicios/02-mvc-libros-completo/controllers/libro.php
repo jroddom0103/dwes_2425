@@ -123,8 +123,8 @@ class Libro extends Controller
         // Necesito crear el método read en el modelo
         $this->view->libro = $this->model->read($id);
 
-        # obtener los cursos
-        $this->view->cursos = $this->model->get_generos();
+        # obtener los generos
+        $this->view->generos = $this->model->get_generos();
 
         # cargo la vista
         $this->view->render('libro/editar/index');
@@ -228,6 +228,9 @@ class Libro extends Controller
 
         # Obtengo los detalles del libro mediante el método read del modelo
         $this->view->libro = $this->model->read($id);
+
+        # obtener los generos
+        $this->view->generos = $this->model->get_generos();
 
         # Cargo la vista
         $this->view->render('libro/mostrar/index');

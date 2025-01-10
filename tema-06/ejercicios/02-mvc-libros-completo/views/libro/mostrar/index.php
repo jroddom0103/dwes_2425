@@ -51,7 +51,7 @@
                     <!-- Géneros -->
                     <div class="mb-3">
                         <label for="generos" class="form-label">Géneros</label>
-                        <input type="text" class="form-control" value="<?= $this->libro->generos[$this->libro->generos_id] ?>" disabled>
+                        <input type="text" class="form-control" value="<?= $this->libro-> ?>" disabled>
                     </div>
                     <!-- Stock -->
                     <div class="mb-3">
