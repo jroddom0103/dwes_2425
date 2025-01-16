@@ -391,7 +391,8 @@ class alumnoModel extends Model
 
         @param: campo por el que ordenar
     */
-    public function order(int $criterio) {
+    public function order(int $criterio)
+    {
 
         try {
 
@@ -437,6 +438,135 @@ class alumnoModel extends Model
             # devuelvo objeto stmtatement
             return $stmt;
 
+        } catch (PDOException $e) {
+
+            // error base de datos
+            require_once 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+            exit();
+
+        }
+    }
+
+    /* 
+        método: validateUniqueDni
+
+        descripción: valida el DNI de un alumno. Que no exista en la base de datos
+
+        @param: 
+            - dni del alumno
+    */
+
+    public function validateUniqueDNI($dni)
+    {
+        try {
+
+            $sql = "SELECT
+                    dni
+                   FROM
+                    alumnos
+                  WHERE
+                    dni=:dni  
+            ";
+
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':dni', $dni, PDO::PARAM_STR, 9);
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->execute();
+
+            if ($stmt->rowCount() != 0) {
+                return FALSE;
+            }
+
+            return TRUE;
+        } catch (PDOException $e) {
+
+            // error base de datos
+            require_once 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+            exit();
+
+        }
+    }
+
+    /* 
+        método: validateUniqueDni
+
+        descripción: valida el DNI de un alumno. Que no exista en la base de datos
+
+        @param: 
+            - dni del alumno
+    */
+
+    public function validateUniqueEmail($email)
+    {
+        try {
+
+            $sql = "SELECT
+                    email
+                   FROM
+                    alumnos
+                  WHERE
+                    email=:email  
+            ";
+
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->execute();
+
+            if ($stmt->rowCount() != 0) {
+                return FALSE;
+            }
+
+            return TRUE;
+        } catch (PDOException $e) {
+
+            // error base de datos
+            require_once 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+            exit();
+
+        }
+    }
+
+    /* 
+        método: validateForeignKeyCurso
+        descripción: valida que el curso exista en la tabla cursos
+        @param: 
+            - id del curso
+    */
+    
+    public function validateForeignKeyCurso(int $id_curso){
+        try {
+
+            $sql = "SELECT
+                    id
+                   FROM
+                    cursos
+                  WHERE
+                    id=:id_curso  
+            ";
+
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':id_curso', $id_curso, PDO::PARAM_INT);
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->execute();
+
+            if ($stmt->rowCount() == 1) {
+                return TRUE;
+            }
+
+            return FALSE;
         } catch (PDOException $e) {
 
             // error base de datos

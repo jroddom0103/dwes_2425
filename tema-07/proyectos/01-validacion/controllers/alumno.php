@@ -19,6 +19,19 @@ class Alumno extends Controller
     public function render()
     {
 
+        // Inicio o continuo la sesión
+        session_start();
+
+        // Compruebo si hay un mensaje de éxito
+        if (isset($_SESSION['mensaje'])) {
+
+            // Creo la propiedad mensaje en la vista
+            $this->view->mensaje = $_SESSION['mensaje'];
+
+            // Elimino la variable de sesión mensaje
+            unset($_SESSION['mensaje']);
+        }
+
         // Creo la propiedad title de la vista
         $this->view->title = "Gestión de Alumnos";
 
@@ -45,6 +58,23 @@ class Alumno extends Controller
         $this->view->alumno = new classAlumno();
 
         // Compruebo si hay errores en la validación
+        if (isset($_SESSION['error'])) {
+
+            // Creo la propiedad error en la vista
+            $this->view->error = $_SESSION['error'];
+
+            // Creo la propiedad alumno en la vista
+            $this->view->alumno = $_SESSION['alumno'];
+
+            // Creo la propiedad mensaje de error
+            $this->view->mensaje_error = 'Error en el formulario.';
+
+            // Elimino la variable de sesión error
+            unset($_SESSION['error']);
+
+            // Elimino la variable de sesión alumno
+            unset($_SESSION['alumno']);
+        }
 
         // Creo la propiead título
         $this->view->title = "Añadir - Gestión de Alumnos";
@@ -70,6 +100,11 @@ class Alumno extends Controller
         // Inicio o continuo la sesión
         session_start();
 
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            die('Petición no válida');
+        }
+
         // Recogemos los detalles del formulario saneados
         // Prevenir ataques XSS
         $nombre = filter_var($_POST['nombre'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -77,7 +112,7 @@ class Alumno extends Controller
         $fechaNac = filter_var($_POST['fechaNac'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $dni = filter_var($_POST['dni'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
-        $telefono = filter_var($_POST['teleono'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $telefono = filter_var($_POST['telefono'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $nacionalidad = filter_var($_POST['nacionalidad'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $id_curso = filter_var($_POST['id_curso'] ??= '', FILTER_SANITIZE_NUMBER_INT);
 
@@ -143,11 +178,21 @@ class Alumno extends Controller
             ]
         ];
         if (empty($dni)) {
-            $error['dni'] = 'El DNI es obligatorio';
+            $error['dni'] = 'El DNI es obligatorio.';
         } else if (!filter_var($dni, FILTER_VALIDATE_REGEXP, $options)) {
-            $error['dni'] = 'Formato DNI no es correcto';
+            $error['dni'] = 'Formato DNI no es correcto.';
         } else if (!$this->model->validateUniqueDNI($dni)) {
-            $error['dni'] = 'El DNI ya existe';
+            $error['dni'] = 'El DNI ya existe.';
+        }
+
+        // Validación del email
+        // Reglas: obligatorio, formato email y clave secundaria
+        if(empty($email)){
+            $error['email'] = 'El email es obligatorio.';
+        }else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $error['email'] = 'Formato email no es correcto.';
+        }else if (!$this->model->validateUniqueEmail($email)){
+            $error['email'] = 'El email ya existe.';
         }
 
         // Validación del teléfono
@@ -165,23 +210,35 @@ class Alumno extends Controller
         }
 
         // Validación del curso
-        // Reglas: obligatorio
+        // Reglas: obligatorio, entero, clave ajena
         if (empty($id_curso)) {
             $error['id_curso'] = 'El curso es obligatorio';
+        } elseif (!filter_var($id_curso, FILTER_VALIDATE_INT)) {
+            $error['id_curso'] = 'El formato del curso es incorrecto';
+        } elseif (!$this->model->validateForeignKeyCurso($id_curso)) {
+            $error['id_curso'] = 'El curso no existe';
         }
 
-        // Si hay errores, los guardamos en la sesión y redirigimos al formulario
+        // Si hay errores, los guardamos en la sesión junto con los datos del alumno y redirigimos al formulario
         if (!empty($error)) {
+            // Creo la variable de sesión alumno con los datos del formulario
+            $_SESSION['alumno'] = $alumno;
+
+            // Creo la variable de sesión error con los errores
             $_SESSION['error'] = $error;
             header('location:' . URL . 'alumno/nuevo');
-            return;
+            exit();
         }
 
         // Añadimos alumno a la tabla
         $this->model->create($alumno);
 
+        // Genero mensaje de éxito
+        $_SESSION['mensaje'] = 'Alumno añadido con éxito';
+
         // redireciona al main de alumno
         header('location:' . URL . 'alumno');
+        exit();
     }
 
     /*

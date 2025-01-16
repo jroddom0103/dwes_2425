@@ -37,7 +37,9 @@
                     <!-- Nombre -->
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre"
+                        <input type="text" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>"
+                        id="nombre" name="nombre"
                             placeholder="Introduzca nombre" value="<?= htmlspecialchars($this->alumno->nombre) ?>"
                             required>
                         <!-- mostrar posible error -->
@@ -49,7 +51,9 @@
                     <!-- Apellidos -->
                     <div class="mb-3">
                         <label for="apellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidos" name="apellidos"
+                        <input type="text" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>"
+                        id="apellidos" name="apellidos"
                             placeholder="Introduzca apellidos" value="<?= htmlspecialchars($this->alumno->apellidos) ?>"
                             required>
                         <!-- mostrar posible error -->
@@ -61,7 +65,9 @@
                     <!-- Fecha Nacimiento -->
                     <div class="mb-3">
                         <label for="fechaNac" class="form-label">Fecha Nacimiento</label>
-                        <input type="date" class="form-control" id="fechaNac" name="fechaNac"
+                        <input type="date" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>"
+                        id="fechaNac" name="fechaNac"
                             value="<?= htmlspecialchars($this->alumno->fechaNac) ?>" required>
                         <!-- mostrar posible error -->
                         <span class="form-text text-danger" role="alert">
@@ -72,7 +78,9 @@
                     <!-- Dni -->
                     <div class="mb-3">
                         <label for="dni" class="form-label">Dni</label>
-                        <input type="text" class="form-control" id="dni" name="dni" placeholder="11111111X"
+                        <input type="text" class="form-control 
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>"
+                        id="dni" name="dni" placeholder="11111111X"
                             value="<?= htmlspecialchars($this->alumno->dni) ?>" required pattern="^[0-9]{8}[A-Za-z]{1}$"
                             title="8 dígitos y una letra">
                         <!-- mostrar posible error -->
@@ -84,7 +92,9 @@
                     <!-- Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="email@ejemplo.es"
+                        <input type="email" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>" 
+                        id="email" name="email" placeholder="email@ejemplo.es"
                             value="<?= htmlspecialchars($this->alumno->email) ?>" required
                             title="Formato de email incorrecto">
                         <!-- mostrar posible error -->
@@ -96,7 +106,9 @@
                     <!-- Telefono -->
                     <div class="mb-3">
                         <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="666666666"
+                        <input type="tel" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>"
+                        id="telefono" name="telefono" placeholder="666666666"
                             value="<?= htmlspecialchars($this->alumno->telefono) ?>" required title="9 dígitos">
                         <!-- mostrar posible error -->
                         <span class="form-text text-danger" role="alert">
@@ -107,7 +119,9 @@
                     <!-- Nacionalidad -->
                     <div class="mb-3">
                         <label for="nacionalidad" class="form-label">Nacionalidad</label>
-                        <input type="text" class="form-control" id="nacionalidad" name="nacionalidad"
+                        <input type="text" class="form-control
+                        <?=(isset($this->error['dni']))? 'is-invalid': null ?>" 
+                        id="nacionalidad" name="nacionalidad"
                             placeholder="Introduzca nacionalidad"
                             value="<?= htmlspecialchars($this->alumno->nacionalidad) ?>">
                         <!-- mostrar posible error -->
