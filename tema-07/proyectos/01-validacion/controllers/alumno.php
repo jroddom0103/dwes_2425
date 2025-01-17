@@ -57,6 +57,9 @@ class Alumno extends Controller
         // Crear un objeto vacío de la clase alumno
         $this->view->alumno = new classAlumno();
 
+        // Crear un token CSRF
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
         // Compruebo si hay errores en la validación
         if (isset($_SESSION['error'])) {
 
@@ -132,8 +135,8 @@ class Alumno extends Controller
             $id_curso
         );
 
+        
         // Validación de los datos
-
 
         // Creo un array para almacenar los errores
         $error = [];
