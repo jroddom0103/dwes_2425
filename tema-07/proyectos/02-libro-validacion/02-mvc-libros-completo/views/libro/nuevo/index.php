@@ -53,7 +53,7 @@
                     <div class="mb-3">
                         <label for="autor" class="form-label">Autor</label>
                         <select class="form-control" id="autor" name="autor">
-                            <option select disabled>Seleccione un autor</option>
+                            <option selected disabled>Seleccione un autor</option>
                             <?php foreach ($this->autores as $indice => $autor): ?>
                                 <option value="<?= $indice ?>" <?= $this->libro->autor == $indice ? 'selected' : '' ?>>
                                     <?= $autor['nombre'] ?>
@@ -72,7 +72,7 @@
                         <select class="form-control" id="editorial" name="editorial">
                             <option selected disabled>Seleccione una editorial</option>
                             <?php foreach ($this->editoriales as $indice => $editorial): ?>
-                                <option value="<?= $indice ?>" <?= $this->libro->editorial == $indice ? 'selected' : '' ?>>
+                                <option value="<?= $indice ?>" <?= $editorial == $indice ? 'selected' : '' ?>>
                                     <?= $editorial['nombre'] ?>
                                 </option>
                             <?php endforeach; ?>
