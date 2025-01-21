@@ -20,7 +20,7 @@
         <!-- Estilo card de bootstrap -->
         <div class="card">
             <div class="card-header">
-            <h5 class="card-title"><?= $this->title ?></h5>
+                <h5 class="card-title"><?= $this->title ?></h5>
             </div>
             <div class="card-body">
                 <!-- detalles de libros  -->
@@ -47,7 +47,7 @@
                         </thead>
                         <tbody>
                             <!-- Mostramos cuerpo de la tabla -->
-                            <?php while ($libro = $this->libros->fetch()): ?>
+                            <?php foreach ($this->libros as $libro): ?>
                                 <tr class="align-middle">
                                     <!-- Detalles de artículos -->
                                     <td><?= $libro->id ?></td>
@@ -72,19 +72,16 @@
                                         </div>
                                     </td>
                                 </tr>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                         </tbody>
-                        
                     </table>
-                    
                 </div>
             </div>
             <div class="card-footer">
-            Nº libros <?= $this->libros->rowCount() ?>
+                Nº libros <?= count($this->libros) ?>
             </div>
         </div>
         <br><br><br>
-
     </div>
 
     <!-- /.container -->

@@ -25,7 +25,7 @@
             <div class="card-body">
                 <!-- Formulario de alumnos  -->
                 <!-- Enviar al controlador update con el id del alumno -->
-                <form action="<?= URL ?>alumno/update/<?= $this->id ?>" method="POST">
+                <form action="<?= URL ?>libro/update/<?= $this->id ?>" method="POST">
 
                     <!-- id -->
                     <div class="mb-3">
@@ -42,11 +42,10 @@
                     <!-- Autor -->
                     <div class="mb-3">
                         <label for="autor" class="form-label">Autor</label>
-                        <select class="form-select" name="autor_id">
-                            <option selected disabled>Seleccione autor</option>
+                        <select class="form-control" id="autor" name="autor">
                             <?php foreach ($this->autores as $autor): ?>
-                                <option value="<?= $autor->id ?>" <?= $autor->id == $this->libro->autor_id ? 'selected' : '' ?>>
-                                    <?= $autor->nombre ?>
+                                <option value="<?= $autor['id'] ?>" <?= $autor['id'] == $this->autor_id ? 'selected' : '' ?>>
+                                    <?= $autor['nombre'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -54,12 +53,11 @@
 
                     <!-- Editorial -->
                     <div class="mb-3">
-                        <label for="editorial" class="form-label">Editorial</label>
-                        <select class="form-select" name="editorial_id">
-                            <option selected disabled>Seleccione editorial</option>
+                        <label for="autor" class="form-label">Editorial</label>
+                        <select class="form-control" id="editorial" name="editorial">
                             <?php foreach ($this->editoriales as $editorial): ?>
-                                <option value="<?= $editorial->id ?>" <?= $editorial->id == $this->libro->editorial_id ? 'selected' : '' ?>>
-                                    <?= $editorial->nombre ?>
+                                <option value="<?= $editorial['id'] ?>" <?= $editorial['id'] == $this->editorial_id ? 'selected' : '' ?>>
+                                    <?= $editorial['nombre'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -68,17 +66,12 @@
                     <!-- Géneros -->
                     <div class="mb-3">
                         <label for="generos" class="form-label">Géneros</label>
-                        <?php
-                        // Obtener los géneros seleccionados del libro
-                        $generosSeleccionados = explode(',', $this->libro->generos_id);
-
-                        // Obtener todos los géneros desde el modelo
-                        foreach ($this->get_generos() as $genero): ?>
+                        <?php foreach ($this->generos as $genero): ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="generos[]" value="<?= $genero->id ?>"
-                                    <?= in_array($genero->id, $generosSeleccionados) ? 'checked' : '' ?>>
-                                <label class="form-check-label" for="genero<?= $genero->id ?>">
-                                    <?= $genero->tema ?>
+                                <input class="form-check-input" type="checkbox" name="generos[]"
+                                    value="<?= $genero['id'] ?>" <?= in_array($genero['id'], $this->libro_generos) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="genero<?= $genero['id'] ?>">
+                                    <?= $genero['tema'] ?>
                                 </label>
                             </div>
                         <?php endforeach; ?>
@@ -93,13 +86,13 @@
                     <!-- Precio -->
                     <div class="mb-3">
                         <label for="precio" class="form-label">Precio</label>
-                        <input type="number" class="form-control" name="precio" value="<?= $this->libro->precio ?>">
+                        <input type="number" class="form-control" name="precio" step="0.01" value="<?= $this->libro->precio ?>">
                     </div>
-                </form>
+
             </div>
             <div class="card-footer">
                 <!-- botones de acción -->
-                <a class="btn btn-secondary" href="<?= URL ?>alumno" role="button">Cancelar</a>
+                <a class="btn btn-secondary" href="<?= URL ?>libro" role="button">Cancelar</a>
                 <button type="reset" class="btn btn-danger">Borrar</button>
                 <button type="submit" class="btn btn-primary">Actualizar</button>
             </div>

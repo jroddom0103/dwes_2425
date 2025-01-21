@@ -22,7 +22,7 @@
             $titulo = null,
             $autor = null,
             $editorial = null,
-            $generos = [],
+            $generos = null,
             $stock = null,
             $precio = null
         ) {

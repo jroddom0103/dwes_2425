@@ -12,17 +12,14 @@
 
 class libroModel extends Model
 {
-
     /*
         método: get()
 
-        Extre los detalles de la tabla libros
+        Extrae los detalles de la tabla libros
     */
     public function get()
     {
-
         try {
-
             // sentencia sql
             $sql = "SELECT 
                 libros.id,
@@ -35,16 +32,15 @@ class libroModel extends Model
             FROM 
                 libros
             INNER JOIN
-                autores
-            ON libros.autor_id = autores.id
+                autores ON libros.autor_id = autores.id
             INNER JOIN
-                editoriales
-            ON libros.editorial_id = editoriales.id
+                editoriales ON libros.editorial_id = editoriales.id
             LEFT JOIN
-                generos
-            ON FIND_IN_SET(generos.id, libros.generos_id)
-            GROUP BY libros.id
-            ORDER BY libros.id";
+                generos ON FIND_IN_SET(generos.id, libros.generos_id)
+            GROUP BY 
+                libros.id, libros.titulo, autores.nombre, editoriales.nombre, libros.stock, libros.precio
+            ORDER BY 
+                libros.id";
 
             // conectamos con la base de datos
             $conexion = $this->db->connect();
@@ -59,9 +55,8 @@ class libroModel extends Model
             $stmt->execute();
 
             // devuelvo objeto stmtatement
-            return $stmt;
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
-
             // error base de datos
             require 'template/partials/errorDB.partial.php';
             $stmt = null;
@@ -71,43 +66,27 @@ class libroModel extends Model
     }
 
     /*
-       método: get_generos()
+        método: get_generos
 
-       Extre los detalles de los generos para generar lista desplegable 
-       dinámica
-   */
+        Extrae todos los géneros
+    */
     public function get_generos()
     {
-
         try {
-
-            // sentencia sql
             $sql = "SELECT 
                         id,
-                        tema as genero
+                        tema 
                     FROM 
-                        generos
-                    ORDER BY
-                        2
-            ";
-
-            // conectamos con la base de datos
+                        generos 
+                    ORDER BY 
+                        tema 
+                    ASC";
             $conexion = $this->db->connect();
-
-            // ejecuto prepare
             $stmt = $conexion->prepare($sql);
-
-            // establezco tipo fetch
-            $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
-
-            // ejecutamos
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
             $stmt->execute();
-
-            // devuelvo objeto stmtatement
             return $stmt->fetchAll();
         } catch (PDOException $e) {
-
-            // error base de datos
             require 'template/partials/errorDB.partial.php';
             $stmt = null;
             $conexion = null;
@@ -123,51 +102,125 @@ class libroModel extends Model
     */
 
     public function create(classLibro $libro)
-    {
-
-        try {
-            $sql = "INSERT INTO Libros (
-                    id,
+{
+    try {
+        $sql = "INSERT INTO libros (
                     titulo,
-                    email,
-                    telefono,
-                    nacionalidad,
-                    dni,
-                    fechaNac,
-                    id_curso
-                )
-                VALUES (
-                    :nombre,
-                    :apellidos,
-                    :email,
-                    :telefono,
-                    :nacionalidad,
-                    :dni,
-                    :fechaNac,
-                    :id_curso
-                )
-            ";
-            # Conectar con la base de datos
+                    autor_id,
+                    editorial_id,
+                    generos_id,
+                    stock,
+                    precio
+                ) VALUES (
+                    :titulo,
+                    :autor,
+                    :editorial,
+                    :generos_id,
+                    :stock,
+                    :precio
+                )";
+
+        # Conectar con la base de datos
+        $conexion = $this->db->connect();
+        $stmt = $conexion->prepare($sql);
+
+        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR);
+        $stmt->bindParam(':autor', $libro->autor, PDO::PARAM_INT);
+        $stmt->bindParam(':editorial', $libro->editorial, PDO::PARAM_INT);
+        $stmt->bindParam(':generos_id', $libro->generos, PDO::PARAM_STR);
+        $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
+        $stmt->bindParam(':precio', $libro->precio, PDO::PARAM_STR);
+
+        // Añadir libro
+        $stmt->execute();
+    } catch (PDOException $e) {
+        // Error base de datos
+        require_once 'template/partials/errorDB.partial.php';
+        $stmt = null;
+        $conexion = null;
+        $this->db = null;
+    }
+}
+    /*
+         método: read
+
+         Extrae los detalles de un libro por su ID
+     */
+    public function read($id)
+    {
+        try {
+            // sentencia sql
+            $sql = "SELECT 
+                libros.id,
+                libros.titulo,
+                autores.nombre as autor,
+                editoriales.nombre as editorial,
+                libros.stock,
+                libros.precio
+            FROM 
+                libros
+            INNER JOIN
+                autores ON libros.autor_id = autores.id
+            INNER JOIN
+                editoriales ON libros.editorial_id = editoriales.id
+            WHERE 
+                libros.id = :id";
+
+            // conectamos con la base de datos
             $conexion = $this->db->connect();
 
-
+            // ejecuto prepare
             $stmt = $conexion->prepare($sql);
 
-            $stmt->bindParam(':nombre', $libro->nombre, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':apellidos', $libro->apellidos, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':email', $libro->email, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':telefono', $libro->telefono, PDO::PARAM_STR, 13);
-            $stmt->bindParam(':nacionalidad', $libro->nacionalidad, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':dni', $libro->dni, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':fechaNac', $libro->fechaNac, PDO::PARAM_STR);
-            $stmt->bindParam(':id_curso', $libro->id_curso, PDO::PARAM_INT);
+            // bindeo el parámetro
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
+            // establezco tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
 
-            // añado alumno
+            // ejecutamos
             $stmt->execute();
+
+            // devuelvo el resultado
+            return $stmt->fetch();
         } catch (PDOException $e) {
             // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+    }
+    /*
+        método: get_generos_by_libro
+
+        descripción: obtiene los géneros del libro correspondiente
+
+        @param: id del libro
+        devuelve: array asociativo con los generos del libro
+    */
+    public function get_generos_by_libro($libro_id)
+    {
+        try {
+            $sql = "SELECT 
+            GROUP_CONCAT(generos.tema ORDER BY generos.tema ASC SEPARATOR ', ') as generos
+        FROM 
+            generos
+        INNER JOIN
+            libros
+        ON FIND_IN_SET(generos.id, libros.generos_id)
+        WHERE 
+            libros.id = :libro_id";
+
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            require 'template/partials/errorDB.partial.php';
             $stmt = null;
             $conexion = null;
             $this->db = null;
@@ -175,60 +228,91 @@ class libroModel extends Model
     }
 
     /*
-        método: read
+        método: get_generos_ids
 
-        descripción: obtiene los detalles de un libro
-        parámetros: id del libro
-        devuelve: objeto con los detalles del libro
-        
+        descripción: obtiene los IDs de los géneros del libro correspondiente
+
+        @param: id del libro
+        devuelve: array con los IDs de los géneros del libro
     */
-
-    public function read(int $id)
+    public function get_generos_ids($libro_id)
     {
-
         try {
             $sql = "SELECT 
-                libros.id,
-                libros.titulo, 
-                autores.nombre as autor,
-                editoriales.nombre as editorial,
-                libros.generos_id,
-                libros.stock,
-                libros.precio
-            FROM 
-                libros
-            INNER JOIN
-                autores
-            ON libros.autor_id = autores.id
-            INNER JOIN
-                editoriales
-            ON libros.editorial_id = editoriales.id
-            WHERE
-                libros.id = :id
-            GROUP BY 
-                libros.id
-            LIMIT 1";
+                        generos.id
+                    FROM 
+                        generos
+                    INNER JOIN
+                        libros
+                    ON FIND_IN_SET(generos.id, libros.generos_id)
+                    WHERE 
+                        libros.id = :libro_id";
 
-            # Conectar con la base de datos
             $conexion = $this->db->connect();
-
             $stmt = $conexion->prepare($sql);
-
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            $stmt->setFetchMode(PDO::FETCH_COLUMN, 0);
             $stmt->execute();
 
-            return $stmt->fetch();
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
-            // // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
+            require 'template/partials/errorDB.partial.php';
             $stmt = null;
             $conexion = null;
             $this->db = null;
-            exit();
-
         }
     }
+
+    /*
+        método: get_autor_id
+
+        descripción: obtiene el ID del autor correspondiente al libro
+
+        @param: id del libro
+        devuelve: ID del autor
+        */
+    public function get_autor_id($libro_id)
+    {
+        try {
+            $sql = "SELECT autor_id FROM libros WHERE id = :libro_id";
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+    }
+
+    /*
+        método: get_editorial_id
+
+        descripción: obtiene el ID de la editorial correspondiente al libro
+
+        @param: id del libro
+        devuelve: ID de la editorial
+    */
+    public function get_editorial_id($libro_id)
+    {
+        try {
+            $sql = "SELECT editorial_id FROM libros WHERE id = :libro_id";
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+    }
+
 
     /*
         método: update
@@ -240,51 +324,118 @@ class libroModel extends Model
             - id del libro
     */
 
-    public function update(classLibro $libro, $id)
+    public function update($libro, $id)
     {
-
         try {
-
-            $sql = "
-            
-            UPDATE libros
-            SET
-                    nombre = :nombre,
-                    apellidos = :apellidos,
-                    email = :email,
-                    telefono = :telefono,
-                    nacionalidad = :nacionalidad,
-                    dni = :dni,
-                    fechaNac = :fechaNac,
-                    id_curso = :id_curso
-            WHERE
-                    id = :id
-            LIMIT 1
-            ";
-
+            $sql = "UPDATE libros SET
+                        titulo = :titulo,
+                        autor_id = :autor,
+                        editorial_id = :editorial,
+                        generos_id = :generos_id,
+                        stock = :stock,
+                        precio = :precio,
+                        update_at = CURRENT_TIMESTAMP
+                    WHERE id = :id";
+    
             $conexion = $this->db->connect();
-
             $stmt = $conexion->prepare($sql);
-
+    
+            $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR);
+            $stmt->bindParam(':autor', $libro->autor, PDO::PARAM_INT);
+            $stmt->bindParam(':editorial', $libro->editorial, PDO::PARAM_INT);
+            $stmt->bindParam(':generos_id', $libro->generos, PDO::PARAM_STR);
+            $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
+            $stmt->bindParam(':precio', $libro->precio, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            $stmt->bindParam(':nombre', $libro->nombre, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':apellidos', $libro->apellidos, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':email', $libro->email, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':telefono', $libro->telefono, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':nacionalidad', $libro->nacionalidad, PDO::PARAM_STR, 30);
-            $stmt->bindParam(':dni', $libro->dni, PDO::PARAM_STR, 9);
-            $stmt->bindParam(':fechaNac', $libro->fechaNac, PDO::PARAM_STR);
-            $stmt->bindParam(':id_curso', $libro->id_curso, PDO::PARAM_INT);
-
             $stmt->execute();
+
         } catch (PDOException $e) {
-            // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
+            // Mostrar el error de la base de datos
+            require 'template/partials/errorDB.partial.php';
             $stmt = null;
             $conexion = null;
             $this->db = null;
-            exit();
+        }
+    }
+    /*
+        método: get_autores
+
+        Extrae todos los nombres de los autores
+    */
+    public function get_autores()
+    {
+        try {
+            // sentencia sql
+            $sql = "SELECT 
+                        id,
+                        nombre 
+                    FROM 
+                        autores 
+                    ORDER BY 
+                        nombre 
+                    ASC";
+
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
+
+            // establezco tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+            // ejecutamos
+            $stmt->execute();
+
+            // devuelvo el resultado como un array
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            // error base de datos
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+    }
+
+    /*
+        método: get_editoriales
+
+        Extrae todos los nombres de las editoriales
+    */
+    public function get_editoriales()
+    {
+        try {
+            // sentencia sql
+            $sql = "SELECT 
+                        id,
+                        nombre 
+                    FROM 
+                        editoriales 
+                    ORDER BY 
+                        nombre 
+                    ASC";
+
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
+
+            // establezco tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+            // ejecutamos
+            $stmt->execute();
+
+            // devuelvo el resultado como un array
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            // error base de datos
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
         }
     }
 

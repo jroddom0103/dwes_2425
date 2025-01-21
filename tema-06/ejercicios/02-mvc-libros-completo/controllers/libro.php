@@ -39,10 +39,19 @@ class Libro extends Controller
     {
 
         // Creo la propiead título
-        $this->view->title = "Añadir - Gestión de libros";
+        $this->view->title = "Nuevo Libro - Gestión de libros";
 
-        // Creo la propiedad cursos en la vista
-        $this->view->cursos = $this->model->get_cursos();
+        // Creo la propiedad generos en la vista
+        $this->view->generos = $this->model->get_generos();
+
+        # obtengo todos los autores
+        $this->view->autores = $this->model->get_autores();
+
+        # obtengo todas las editoriales
+        $this->view->editoriales = $this->model->get_editoriales();
+
+        # obtengo todos los generos
+        $this->view->generos = $this->model->get_generos();
 
         // Cargo la vista asociada a este método
         $this->view->render('libro/nuevo/index');
@@ -60,29 +69,22 @@ class Libro extends Controller
     {
 
         // Recogemos los detalles del formulario
-        $nombre = $_POST['nombre'];
-        $apellidos = $_POST['apellidos'];
-        $fechaNac = $_POST['fechaNac'];
-        $dni = $_POST['dni'];
-        $email = $_POST['email'];
-        $telefono = $_POST['telefono'];
-        $nacionalidad = $_POST['nacionalidad'];
-        $id_curso = $_POST['id_curso'];
+        $titulo = $_POST['titulo'];
+        $autor = $_POST['autor'];
+        $editorial = $_POST['editorial'];
+        $generos_id = isset($_POST['generos']) ? implode(',', $_POST['generos']) : '';
+        $stock = $_POST['stock'];
+        $precio = $_POST['precio'];
 
         // Creamos un objeto de la clase libro
         $libro = new classlibro(
             null,
-            $nombre,
-            $apellidos,
-            $email,
-            $telefono,
-            null,
-            null,
-            null,
-            $nacionalidad,
-            $dni,
-            $fechaNac,
-            $id_curso
+            $titulo,
+            $autor,
+            $editorial,
+            $generos_id,
+            $stock,
+            $precio
         );
 
         // Añadimos libro a la tabla
@@ -119,11 +121,21 @@ class Libro extends Controller
         # title
         $this->view->title = "Formulario Editar - Gestión de libros";
 
-        # obtener objeto de la clase libro con el id pasado
         // Necesito crear el método read en el modelo
         $this->view->libro = $this->model->read($id);
 
-        # obtener los generos
+        # obtengo los datos del libro
+        $this->view->autor_id = $this->model->get_autor_id($id);
+        $this->view->editorial_id = $this->model->get_editorial_id($id);
+        $this->view->libro_generos = $this->model->get_generos_ids($id);
+
+        # obtengo todos los autores
+        $this->view->autores = $this->model->get_autores();
+
+        # obtengo todas las editoriales
+        $this->view->editoriales = $this->model->get_editoriales();
+
+        # obtengo todos los generos
         $this->view->generos = $this->model->get_generos();
 
         # cargo la vista
@@ -148,30 +160,23 @@ class Libro extends Controller
         $id = $param[0];
 
         // Recogemos los detalles del formulario
-        $nombre = $_POST['nombre'];
-        $apellidos = $_POST['apellidos'];
-        $fechaNac = $_POST['fechaNac'];
-        $dni = $_POST['dni'];
-        $email = $_POST['email'];
-        $telefono = $_POST['telefono'];
-        $nacionalidad = $_POST['nacionalidad'];
-        $id_curso = $_POST['id_curso'];
+        $titulo = $_POST['titulo'];
+        $autor = $_POST['autor'];
+        $editorial = $_POST['editorial'];
+        $generos_id = isset($_POST['generos']) ? implode(',', $_POST['generos']) : '';
+        $stock = $_POST['stock'];
+        $precio = $_POST['precio'];
 
         # Con los detalles formulario creo objeto libro
         $libro = new classlibro(
 
             null,
-            $nombre,
-            $apellidos,
-            $email,
-            $telefono,
-            null,
-            null,
-            null,
-            $nacionalidad,
-            $dni,
-            $fechaNac,
-            $id_curso
+            $titulo,
+            $autor,
+            $editorial,
+            $generos_id,
+            $stock,
+            $precio
 
         );
 
@@ -200,7 +205,6 @@ class Libro extends Controller
         $id = $param[0];
 
         # Elimino libro de la base de datos
-        // Necesito crear el método delete en el modelo
         $this->model->delete($id);
 
         # Cargo el controlador principal de libro
@@ -229,8 +233,7 @@ class Libro extends Controller
         # Obtengo los detalles del libro mediante el método read del modelo
         $this->view->libro = $this->model->read($id);
 
-        # obtener los generos
-        $this->view->generos = $this->model->get_generos();
+        $this->view->generos = $this->model->get_generos_by_libro($id);
 
         # Cargo la vista
         $this->view->render('libro/mostrar/index');
@@ -258,7 +261,7 @@ class Libro extends Controller
         # Cargo el título
         $this->view->title = "Filtrar por: {$expresion} - Gestión de libros";
 
-        
+
 
         # Obtengo los libros que coinciden con la expresión de búsqueda
         $this->view->libros = $this->model->filter($expresion);
