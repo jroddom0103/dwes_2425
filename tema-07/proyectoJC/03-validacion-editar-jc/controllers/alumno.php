@@ -536,7 +536,7 @@ class Alumno extends Controller
         // Inicio o continuo la sesión
         session_start();
 
-        // Obtengo el id del alumno que voy a eliminar
+        // Obtengo el id del libro que voy a eliminar
         $id = htmlspecialchars($param[0]);
 
         // Obtengo el token CSRF
@@ -549,13 +549,13 @@ class Alumno extends Controller
             exit();
         }
 
-        // Validar id del alumno
-        if(!$this->model->validateIdAlumno($id))
+        // Validar id del libro
+        if(!$this->model->validateIdLibro($id))
         {
             // Genero mensaje de error
             $_SESSION['error'] = 'ID no válido';
 
-            header('location:'.URL.'alumno');
+            header('location:'.URL.'libro');
             exit();
         }
 

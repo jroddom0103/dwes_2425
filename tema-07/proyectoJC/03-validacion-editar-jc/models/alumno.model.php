@@ -480,7 +480,7 @@ class alumnoModel extends Model
             $stmt->execute();
 
             # devuelvo objeto stmtatement
-            return $stmt;
+            return $stmt->fetchAll();
 
         } catch (PDOException $e) {
 
