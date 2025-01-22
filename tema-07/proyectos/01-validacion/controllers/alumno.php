@@ -576,7 +576,6 @@ class Alumno extends Controller
         # Obtengo el id del campo por el que se ordenarán los alumnos
         $id = $param[0];
 
-
         # Cargo el título
         $this->view->title = "Ordenar por {$criterios[$id]} - Gestión de Alumnos";
 
