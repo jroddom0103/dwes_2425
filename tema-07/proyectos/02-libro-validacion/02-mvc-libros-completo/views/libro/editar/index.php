@@ -17,50 +17,70 @@
         <!-- capa de mensajes -->
         <?php require_once 'template/partials/mensaje.partial.php' ?>
 
+        <!-- capa de errores -->
+        <?php require_once 'template/partials/error.partial.php' ?>
+
         <!-- Estilo card de bootstrap -->
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title"><?= $this->title ?></h5>
+                <!-- Protección ataques XSS -->
+                <h5 class="card-title"><?= htmlspecialchars($this->title) ?></h5>
             </div>
             <div class="card-body">
-                <!-- Formulario de alumnos  -->
-                <!-- Enviar al controlador update con el id del alumno -->
-                <form action="<?= URL ?>libro/update/<?= $this->id ?>" method="POST">
+                <!-- Formulario de libros  -->
+                <!-- Enviar al controlador create -->
+                <form action="<?= URL ?>libro/update/<?=$this->id?>" method="POST">
 
-                    <!-- id -->
-                    <div class="mb-3">
-                        <label for="id" class="form-label">Id</label>
-                        <input type="number" class="form-control" value="<?= $this->libro->id ?>" disabled>
-                    </div>
+                    <!-- protección CSRF -->
+                    <input type="hidden" name="csrf_token"
+                        value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
                     <!-- Título -->
                     <div class="mb-3">
                         <label for="titulo" class="form-label">Título</label>
-                        <input type="text" class="form-control" name="titulo" value="<?= $this->libro->titulo ?>">
+                        <input type="text" class="form-control
+                        <?= (isset($this->error['titulo'])) ? 'is-invalid' : null ?>" id="titulo" name="titulo"
+                            placeholder="Introduzca título" value="<?= htmlspecialchars($this->libro->titulo) ?>"
+                            required>
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['titulo'] ??= null ?>
+                        </span>
                     </div>
+
 
                     <!-- Autor -->
                     <div class="mb-3">
                         <label for="autor" class="form-label">Autor</label>
                         <select class="form-control" id="autor" name="autor">
-                            <?php foreach ($this->autores as $autor): ?>
-                                <option value="<?= $autor['id'] ?>" <?= $autor['id'] == $this->autor_id ? 'selected' : '' ?>>
+                            <option selected disabled>Seleccione un autor</option>
+                            <?php foreach ($this->autores as $indice => $autor): ?>
+                                <option value="<?= $indice ?>" <?= $this->libro->autor == $indice ? 'selected' : '' ?>>
                                     <?= $autor['nombre'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['autor'] ??= null ?>
+                        </span>
                     </div>
 
                     <!-- Editorial -->
                     <div class="mb-3">
-                        <label for="autor" class="form-label">Editorial</label>
+                        <label for="editorial" class="form-label">Editorial</label>
                         <select class="form-control" id="editorial" name="editorial">
-                            <?php foreach ($this->editoriales as $editorial): ?>
-                                <option value="<?= $editorial['id'] ?>" <?= $editorial['id'] == $this->editorial_id ? 'selected' : '' ?>>
+                            <option selected disabled>Seleccione una editorial</option>
+                            <?php foreach ($this->editoriales as $indice => $editorial): ?>
+                                <option value="<?= $indice ?>" <?= $editorial == $indice ? 'selected' : '' ?>>
                                     <?= $editorial['nombre'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['editorial'] ??= null ?>
+                        </span>
                     </div>
 
                     <!-- Géneros -->
@@ -69,7 +89,7 @@
                         <?php foreach ($this->generos as $genero): ?>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="generos[]"
-                                    value="<?= $genero['id'] ?>" <?= in_array($genero['id'], $this->libro_generos) ? 'checked' : '' ?>>
+                                    value="<?= $genero['id'] ?>">
                                 <label class="form-check-label" for="genero<?= $genero['id'] ?>">
                                     <?= $genero['tema'] ?>
                                 </label>
@@ -80,13 +100,21 @@
                     <!-- Stock -->
                     <div class="mb-3">
                         <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" name="stock" value="<?= $this->libro->stock ?>">
+                        <input type="number" class="form-control" name="stock" value="">
                     </div>
 
                     <!-- Precio -->
                     <div class="mb-3">
                         <label for="precio" class="form-label">Precio</label>
-                        <input type="number" class="form-control" name="precio" step="0.01" value="<?= $this->libro->precio ?>">
+                        <input type="number" class="form-control
+                        <?= (isset($this->error['precio'])) ? 'is-invalid' : null ?>" id="precio" name="precio"
+                            placeholder="Introduzca precio." value="<?= htmlspecialchars($this->libro->precio) ?>"
+                            required>
+
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['precio'] ??= null ?>
+                        </span>
                     </div>
 
             </div>
@@ -94,10 +122,10 @@
                 <!-- botones de acción -->
                 <a class="btn btn-secondary" href="<?= URL ?>libro" role="button">Cancelar</a>
                 <button type="reset" class="btn btn-danger">Borrar</button>
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <button type="submit" class="btn btn-primary">Crear</button>
             </div>
             </form>
-            <!-- Fin formulario nuevo artículo -->
+            <!-- Fin formulario nuevo libro -->
         </div>
         <br><br><br>
 

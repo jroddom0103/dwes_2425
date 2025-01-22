@@ -22,6 +22,9 @@ class Alumno extends Controller
         // Inicio o continuo la sesión
         session_start();
 
+        // Crear un token CSRF
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
         // Compruebo si hay un mensaje de éxito
         if (isset($_SESSION['mensaje'])) {
 
@@ -104,8 +107,10 @@ class Alumno extends Controller
         session_start();
 
         // Validación CSRF
-        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-            die('Petición no válida');
+        if (!hash_equals($_SESSION['csrf_token'], $this->view->csrf_token)) {
+            require_once 'controllers/error.php';
+            $controller = new Errores('Petición no válida');
+            exit();
         }
 
         // Recogemos los detalles del formulario saneados
@@ -135,7 +140,7 @@ class Alumno extends Controller
             $id_curso
         );
 
-        
+
         // Validación de los datos
 
         // Creo un array para almacenar los errores
@@ -190,11 +195,11 @@ class Alumno extends Controller
 
         // Validación del email
         // Reglas: obligatorio, formato email y clave secundaria
-        if(empty($email)){
+        if (empty($email)) {
             $error['email'] = 'El email es obligatorio.';
-        }else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error['email'] = 'Formato email no es correcto.';
-        }else if (!$this->model->validateUniqueEmail($email)){
+        } else if (!$this->model->validateUniqueEmail($email)) {
             $error['email'] = 'El email ya existe.';
         }
 
@@ -249,31 +254,37 @@ class Alumno extends Controller
 
         Muestra el formulario que permite editar los detalles de un alumno
 
-        url asociada: /alumno/editar/id
+        url asociada: /alumno/editar/id/csrf_token
 
-        @param int $id: id del alumno a editar
+        @param 
+            - int $id: id del alumno a editar
+            - string $csrf_token: token CSRF
 
     */
     function editar($param = [])
     {
+        // Inicio o continuo la sesión
+        session_start();
 
         # obtengo el id del alumno que voy a editar
         // alumno/edit/4
-        // -- alumno es el nombre del controlador
-        // -- edit es el nombre del método
-        // -- $param es un array porque puedo pasar varios parámetros a un método
+        $this->view->id = htmlspecialchars($param[0]);
 
-        $id = $param[0];
+        # obtengo el token CSRF
+        $this->view->csrf_token = $param[1];
 
-        # asigno id a una propiedad de la vista
-        $this->view->id = $id;
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $this->view->csrf_token)) {
+            require_once 'controllers/error.php';
+            $controller = new Errores('Petición no válida');
+            exit();
+        }
 
         # title
-        $this->view->title = "Formulario Editar - Gestión de Alumnos";
+        $this->view->title = "Formulario Editar Alumno";
 
-        # obtener objeto de la clase alumno con el id pasado
-        // Necesito crear el método read en el modelo
-        $this->view->alumno = $this->model->read($id);
+        # obtener objeto de la clase alumno con el id asociado
+        $this->view->alumno = $this->model->read($this->view->id);
 
         # obtener los cursos
         $this->view->cursos = $this->model->get_cursos();
@@ -296,23 +307,37 @@ class Alumno extends Controller
     public function update($param = [])
     {
 
-        # Cargo id del alumno
-        $id = $param[0];
+        // Inicio o continuo la sesión
+        session_start();
 
-        // Recogemos los detalles del formulario
-        $nombre = $_POST['nombre'];
-        $apellidos = $_POST['apellidos'];
-        $fechaNac = $_POST['fechaNac'];
-        $dni = $_POST['dni'];
-        $email = $_POST['email'];
-        $telefono = $_POST['telefono'];
-        $nacionalidad = $_POST['nacionalidad'];
-        $id_curso = $_POST['id_curso'];
+        // Obtengo el id del alumno que voy a editar
+        $id = htmlspecialchars($param[0]);
 
-        # Con los detalles formulario creo objeto alumno
-        $alumno = new classAlumno(
+        # obtengo el token CSRF
+        $csrf_token = $param[1];
 
-            null,
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            require_once 'controllers/error.php';
+            $controller = new Errores('Petición no válida');
+            exit();
+        }
+
+        // Recogemos los detalles del formulario saneados
+        // Prevenir ataques XSS
+        $nombre = filter_var($_POST['nombre'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $apellidos = filter_var($_POST['apellidos'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $fechaNac = filter_var($_POST['fechaNac'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $dni = filter_var($_POST['dni'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
+        $telefono = filter_var($_POST['telefono'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $nacionalidad = filter_var($_POST['nacionalidad'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $id_curso = filter_var($_POST['id_curso'] ??= '', FILTER_SANITIZE_NUMBER_INT);
+
+
+        // Actualizo los detalles del alumno
+        $alumno_form = new classAlumno(
+            $id,
             $nombre,
             $apellidos,
             $email,
@@ -324,15 +349,119 @@ class Alumno extends Controller
             $dni,
             $fechaNac,
             $id_curso
-
         );
 
-        # Actualizo base  de datos
+        $alumno = $this->model->read($id);
+
+        // Validación de los datos
+        // Validado en caso de que haya sufrido modificaciones el campo correspondiente
+        $error = [];
+
+        // Validación del nombre
+        // Reglas: obligatorio
+        if(strcmp($nombre,$alumno->nombre)!=0) {
+            if (empty($nombre)) {
+                $error['nombre'] = 'El nombre es obligatorio';
+            }
+        }
+
+        // Validación de los apellidos
+        // Reglas: obligatorio
+        if(strcmp($apellidos,$alumno->apellidos)!=0) {
+            if (empty($apellidos)) {
+                $error['apellidos'] = 'Los apellidos son obligatorios';
+            }
+        }
+
+        // Validación de la fecha de nacimiento
+        // Reglas: obligatorio, formato fecha
+        if(strcmp($fechaNac,$alumno->fechaNac)!=0) {
+            if (empty($fechaNac)) {
+                $error['fechaNac'] = 'La fecha de nacimiento es obligatoria';
+            } elseif (!DateTime::createFromFormat('Y-m-d', $fechaNac)) {
+                $error['fechaNac'] = 'El formato de la fecha de nacimiento es incorrecto';
+            }
+        }
+
+        // Validación del DNI
+        // Reglas: obligatorio, formato DNI y clave secundaria
+        if(strcmp($dni,$alumno->dni)!=0) {
+            // Expresión regular para validar el DNI
+            // 8 números seguidos de una letra
+            $options = [
+                'options' => [
+                    'regexp' => '/^(\d{8})([A-Za-z])$/'
+                ]
+            ];
+            if (empty($dni)) {
+                $error['dni'] = 'El DNI es obligatorio.';
+            } else if (!filter_var($dni, FILTER_VALIDATE_REGEXP, $options)) {
+                $error['dni'] = 'Formato DNI no es correcto.';
+            } else if (!$this->model->validateUniqueDNI($dni)) {
+                $error['dni'] = 'El DNI ya existe.';
+            }
+        }
+
+        // Validación del email
+        // Reglas: obligatorio, formato email
+        if(strcmp($email,$alumno->email)!=0) {
+            if (empty($email)) {
+                $error['email'] = 'El email es obligatorio';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error['email'] = 'El formato del email es incorrecto';
+            }
+        }
+
+        // Validación del teléfono
+        // Reglas: obligatorio, formato teléfono
+        if(strcmp($telefono,$alumno->telefono)!=0) {
+            if (empty($telefono)) {
+                $error['telefono'] = 'El teléfono es obligatorio';
+            } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
+                $error['telefono'] = 'El formato del teléfono es incorrecto';
+            }
+        }
+
+        // Validación de la nacionalidad
+        // Reglas: obligatorio
+        if(strcmp($nacionalidad,$alumno->nacionalidad)!=0) {
+            if (empty($nacionalidad)) {
+                $error['nacionalidad'] = 'La nacionalidad es obligatoria';
+            }
+        }
+
+        // Validación del curso
+        // Reglas: obligatorio, entero, clave ajena
+        if($id_curso =!$alumno->id_curso) {
+            if (empty($id_curso)) {
+                $error['id_curso'] = 'El curso es obligatorio';
+            } elseif (!filter_var($id_curso, FILTER_VALIDATE_INT)) {
+                $error['id_curso'] = 'El formato del curso es incorrecto';
+            } elseif (!$this->model->validateForeignKeyCurso($id_curso)) {
+                $error['id_curso'] = 'El curso no existe';
+            }
+        }
+
+        // Si hay errores, los guardamos en la sesión junto con los datos del alumno y redirigimos al formulario
+        if (!empty($error)) {
+            // Creo la variable de sesión alumno con los datos del formulario
+            $_SESSION['alumno'] = $alumno_form;
+
+            // Creo la variable de sesión error con los errores
+            $_SESSION['error'] = $error;
+
+            header('location:' . URL . 'alumno/editar/' . $id . '/' . $csrf_token);
+            exit();
+        }
+
         // Necesito crear el método update en el modelo
-        $this->model->update($alumno, $id);
+        $this->model->update($alumno_form, $id);
+
+        $_SESSION['mensaje'] = 'Alumno actualizado con éxito';
 
         # Cargo el controlador principal de alumno
         header('location:' . URL . 'alumno');
+        exit();
     }
 
     /*
@@ -446,7 +575,6 @@ class Alumno extends Controller
 
         # Obtengo el id del campo por el que se ordenarán los alumnos
         $id = $param[0];
-
 
         # Cargo el título
         $this->view->title = "Ordenar por {$criterios[$id]} - Gestión de Alumnos";
