@@ -605,12 +605,22 @@ class libroModel extends Model
 
         @param: campo por el que ordenar
     */
-    public function order($criterio)
+    public function order(int $criterio)
     {
+        // Lista de columnas permitidas para ordenar
+        $columnasPermitidas = ['id', 'titulo', 'autor', 'editorial', 'generos', 'stock', 'precio'];
+
+        // Validar el criterio de ordenación
+        if ($criterio < 1 || $criterio > 7) {
+            throw new InvalidArgumentException('Criterio de ordenación no válido');
+        }
+
+        // Obtener el nombre de la columna correspondiente al índice
+        $columnaOrden = $columnasPermitidas[$criterio - 1];
+
         try {
             // comando sql
-            $sql = "
-            SELECT 
+            $sql = "SELECT 
                 libros.id,
                 libros.titulo,
                 autores.nombre as autor,
@@ -629,31 +639,29 @@ class libroModel extends Model
             GROUP BY 
                 libros.id, libros.titulo, autores.nombre, editoriales.nombre, libros.stock, libros.precio
             ORDER BY 
-                :criterio";
+                $columnaOrden";
 
             // conectamos con la base de datos
             $conexion = $this->db->connect();
 
-            // ejecuto prepare
+            // ejecutamos mediante prepare
             $stmt = $conexion->prepare($sql);
 
-            $stmt->bindParam(':criterio', $criterio, PDO::PARAM_INT);
-
-            // establezco tipo fetch
+            // establecemos tipo fetch
             $stmt->setFetchMode(PDO::FETCH_OBJ);
 
-            // ejecutamos
+            // ejecutamos 
             $stmt->execute();
 
             // devuelvo objeto stmtatement
             return $stmt->fetchAll();
-            
         } catch (PDOException $e) {
             // error base de datos
-            require 'template/partials/errorDB.partial.php';
+            require_once 'template/partials/errorDB.partial.php';
             $stmt = null;
             $conexion = null;
             $this->db = null;
+            exit();
         }
     }
 }

@@ -17,20 +17,28 @@
                         Ordenar
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/1/<?=$_SESSION['csrf_token']?>">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/2/<?=$_SESSION['csrf_token']?>">Título</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/3/<?=$_SESSION['csrf_token']?>">Autor</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/4/<?=$_SESSION['csrf_token']?>">Editorial</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/5/<?=$_SESSION['csrf_token']?>">Géneros</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/6/<?=$_SESSION['csrf_token']?>">Stock</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/ordenar/7/<?=$_SESSION['csrf_token']?>">Precio</a></li>
-                        
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/1/<?= $_SESSION['csrf_token'] ?>">Id</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/2/<?= $_SESSION['csrf_token'] ?>">Título</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/3/<?= $_SESSION['csrf_token'] ?>">Autor</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/4/<?= $_SESSION['csrf_token'] ?>">Editorial</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/5/<?= $_SESSION['csrf_token'] ?>">Géneros</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/6/<?= $_SESSION['csrf_token'] ?>">Stock</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/7/<?= $_SESSION['csrf_token'] ?>">Precio</a></li>
+
                     </ul>
                 </li>
 
             </ul>
             <form class="d-flex" role="search" action="alumno/filtrar" method="GET">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="expresion" required>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="expresion"
+                    required>
                 <button class="btn btn-outline-primary" type="submit">Buscar</button>
             </form>
         </div>
