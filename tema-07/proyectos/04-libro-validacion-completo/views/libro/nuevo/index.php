@@ -83,6 +83,34 @@
                         </span>
                     </div>
 
+                    <!-- Fecha de edición -->
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Fecha de Edición</label>
+                        <input type="date" class="form-control
+                        <?= (isset($this->error['fecha_edicion'])) ? 'is-invalid' : null ?>" id="fecha_edicion" name="fecha_edicion"
+                            placeholder="Introduzca fecha de edición." value="<?= htmlspecialchars($this->libro->fecha_edicion) ?>"
+                            required>
+
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['fecha_edicion'] ??= null ?>
+                        </span>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="number" class="form-control
+                        <?= (isset($this->error['isbn'])) ? 'is-invalid' : null ?>" id="isbn" name="isbn"
+                            placeholder="Introduzca isbn." value="<?= htmlspecialchars($this->libro->isbn) ?>"
+                            required>
+
+                        <!-- mostrar posible error -->
+                        <span class="form-text text-danger" role="alert">
+                            <?= $this->error['isbn'] ??= null ?>
+                        </span>
+                    </div>
+
                     <!-- Géneros -->
                     <div class="mb-3">
                         <label for="generos" class="form-label">Géneros</label>
@@ -109,7 +137,7 @@
                         <input type="number" class="form-control
                         <?= (isset($this->error['precio'])) ? 'is-invalid' : null ?>" id="precio" name="precio"
                             placeholder="Introduzca precio." value="<?= htmlspecialchars($this->libro->precio) ?>"
-                            required>
+                            step="0.01" required>
 
                         <!-- mostrar posible error -->
                         <span class="form-text text-danger" role="alert">

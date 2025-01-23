@@ -22,8 +22,10 @@ class Libro extends Controller
         // Inicio o continuo la sesión
         session_start();
 
-        // Creo un token CSRF
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        // Solo creo un token CSRF si no existe
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
         // Compruebo si hay un mensaje de éxito
         if (isset($_SESSION['mensaje'])) {
@@ -136,6 +138,8 @@ class Libro extends Controller
         $titulo = $_POST['titulo'];
         $autor = $_POST['autor'];
         $editorial = $_POST['editorial'];
+        $fecha_edicion = $_POST['fecha_edicion'];
+        $isbn = $_POST['isbn'];
         $generos_id = isset($_POST['generos']) ? implode(',', $_POST['generos']) : '';
         $stock = $_POST['stock'];
         $precio = $_POST['precio'];
@@ -146,6 +150,8 @@ class Libro extends Controller
             $titulo,
             $autor,
             $editorial,
+            $fecha_edicion,
+            $isbn,
             $generos_id,
             $stock,
             $precio
@@ -182,6 +188,25 @@ class Libro extends Controller
             $error['editorial'] = 'La editorial no existe';
         }
 
+        // Validación de la fecha de edición
+        // Reglas: Obligatorio, formato tipo fecha
+        if (empty($fecha_edicion)) {
+            $error['fecha_edicion'] = 'La fecha de edición es obligatoria';
+        } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_edicion)) {
+            $error['fecha_edicion'] = 'La fecha de edición debe tener el formato YYYY-MM-DD';
+        }
+
+        // Validación del ISBN
+        // Reglas: Obligatorio, formato ISBN (13 dígitos numéricos), valor único
+        if (empty($isbn)) {
+            $error['isbn'] = 'El ISBN es obligatorio';
+        } elseif (!preg_match('/^\d{13}$/', $isbn)) {
+            $error['isbn'] = 'El ISBN debe tener 13 dígitos';
+        } elseif ($this->model->get_isbn($isbn)) {
+            $error['isbn'] = 'El ISBN ya existe';
+        }
+
+
         // Validación del precio
         // Reglas: Obligatorio, numérico
         if (empty($precio)) {
@@ -194,24 +219,6 @@ class Libro extends Controller
         // Reglas: Opcional
         if (!empty($stock) && !is_numeric($stock)) {
             $error['stock'] = 'Las unidades deben ser un número';
-        }
-
-        // Fecha Edición
-        // Reglas: Obligatorio, formato tipo fecha
-        if (empty($fecha_edicion)) {
-            $error['fecha_edicion'] = 'La fecha de edición es obligatoria';
-        } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_edicion)) {
-            $error['fecha_edicion'] = 'La fecha de edición debe tener el formato YYYY-MM-DD';
-        }
-
-        // ISBN
-        // Reglas: Obligatorio, formato ISBN (13 dígitos numéricos) y valor único
-        if (empty($isbn)) {
-            $error['isbn'] = 'El ISBN es obligatorio';
-        } elseif (!preg_match('/^\d{13}$/', $isbn)) {
-            $error['isbn'] = 'El ISBN debe tener 13 dígitos';
-        } elseif ($this->model->get_isbn($isbn)) {
-            $error['isbn'] = 'El ISBN ya existe';
         }
 
         // Validación de los géneros
@@ -339,9 +346,11 @@ class Libro extends Controller
 
         // Recogemos los detalles del formulario
         // Prevenir ataques XSS
-        $titulo = filter_var($_POST['titulo'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $autor = filter_var($_POST['autor'] ??= '', FILTER_SANITIZE_NUMBER_INT);
-        $editorial = filter_var($_POST['editorial'] ??= '', FILTER_SANITIZE_NUMBER_INT);
+        $titulo = filter_var($_POST['titulo'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $autor = filter_var($_POST['autor'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+        $editorial = filter_var($_POST['editorial'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+        $fecha_edicion = filter_var($_POST['fecha_edicion'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $isbn = filter_var($_POST['isbn'] ?? '', FILTER_VALIDATE_INT);
         $generos_id = isset($_POST['generos']) ? $_POST['generos'] : [];
         $generos_id = array_filter($generos_id, function ($genero) {
             return filter_var($genero, FILTER_VALIDATE_INT);
@@ -350,13 +359,14 @@ class Libro extends Controller
         $stock = filter_var($_POST['stock'], FILTER_SANITIZE_NUMBER_INT);
         $precio = filter_var($_POST['precio'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        # Creo un objeto de la clase libro con los detalles del formulario
-        // Actualizo los detalles del libro
+        // Creo un objeto de la clase libro con los detalles del formulario
         $libro = new classlibro(
             $id,
             $titulo,
             $autor,
             $editorial,
+            $fecha_edicion,
+            $isbn,
             $generos_id,
             $stock,
             $precio
@@ -368,9 +378,9 @@ class Libro extends Controller
         // Validación de los datos
         // Valido en caso de que haya sufrido modificaciones el campo correspondiente
         $error = [];
+        $cambios = false;
 
         // Validación del título
-        // Reglas: obligatorio
         if (strcmp($titulo, $libro_db->titulo) !== 0) {
             $cambios = true;
             if (empty($titulo)) {
@@ -379,7 +389,6 @@ class Libro extends Controller
         }
 
         // Validación del autor
-        // Reglas: Validación Clave Ajena: Obligatorio, numérico, id de autor existe en la tabla autores
         if (strcmp($autor, $libro_db->autor) !== 0) {
             $cambios = true;
             if (empty($autor)) {
@@ -392,7 +401,6 @@ class Libro extends Controller
         }
 
         // Validación de la editorial
-        // Reglas: Validación Clave Ajena, numérico, id de editorial existe en la tabla editoriales
         if (strcmp($editorial, $libro_db->editorial) !== 0) {
             $cambios = true;
             if (empty($editorial)) {
@@ -404,8 +412,29 @@ class Libro extends Controller
             }
         }
 
+        // Validación de la fecha de edición
+        if (strcmp($fecha_edicion, $libro_db->fecha_edicion) !== 0) {
+            $cambios = true;
+            if (empty($fecha_edicion)) {
+                $error['fecha_edicion'] = 'La fecha de edición es obligatoria';
+            } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_edicion)) {
+                $error['fecha_edicion'] = 'La fecha de edición debe tener el formato YYYY-MM-DD';
+            }
+        }
+
+        // Validación del ISBN
+        if (strcmp($isbn, $libro_db->isbn) !== 0) {
+            $cambios = true;
+            if (empty($isbn)) {
+                $error['isbn'] = 'El ISBN es obligatorio';
+            } elseif (!preg_match('/^\d{13}$/', $isbn)) {
+                $error['isbn'] = 'El ISBN debe tener 13 dígitos';
+            } elseif ($this->model->get_isbn($isbn)) {
+                $error['isbn'] = 'El ISBN ya existe';
+            }
+        }
+
         // Validación de unidades
-        // Reglas: Opcional
         if (strcmp($stock, $libro_db->stock) !== 0) {
             $cambios = true;
             if (!empty($stock) && !filter_var($stock, FILTER_VALIDATE_INT)) {
@@ -414,7 +443,6 @@ class Libro extends Controller
         }
 
         // Validación del precio
-        // Reglas: Obligatorio, numérico
         if (strcmp($precio, $libro_db->precio) !== 0) {
             $cambios = true;
             if (empty($precio)) {
@@ -425,7 +453,6 @@ class Libro extends Controller
         }
 
         // Validación de los géneros
-        // Reglas: Obligatorio (tengo que elegir al menos 1), valores numéricos, valores existentes en la tabla géneros
         if (strcmp($generos_id, $libro_db->generos_id) !== 0) {
             $cambios = true;
             if (empty($generos_id)) {
@@ -443,7 +470,6 @@ class Libro extends Controller
 
         // Si hay errores
         if (!empty($error)) {
-
             // Formulario no ha sido validado
             // Tengo que redireccionar al formulario de nuevo
 
@@ -453,17 +479,19 @@ class Libro extends Controller
             // Creo la variable de sesión error con los errores
             $_SESSION['error'] = $error;
 
-            header('location:' . URL . 'libro/editar/' . '/' . $csrf_token);
+            header('location:' . URL . 'libro/editar/' . $id . '/' . $csrf_token);
             exit();
         }
 
-        // Necesito crear el método update en el modelo
-        $this->model->update($libro, $id);
+        // Si hay cambios, actualizo el libro
+        if ($cambios) {
+            $this->model->update($libro, $id);
 
-        // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Libro actualizado con éxito';
+            // Genero mensaje de éxito
+            $_SESSION['mensaje'] = 'Libro actualizado con éxito';
+        }
 
-        # Cargo el controlador principal de libro
+        // Redirecciono al main de libro
         header('location:' . URL . 'libro');
     }
 
@@ -545,12 +573,11 @@ class Libro extends Controller
         }
 
         // Validar id del libro
-        if(!$this->model->validateIdLibro($id))
-        {
+        if (!$this->model->validateIdLibro($id)) {
             // Genero mensaje de error
             $_SESSION['error'] = 'ID no válido';
 
-            header('location:'.URL.'libro');
+            header('location:' . URL . 'libro');
             exit();
         }
 
@@ -581,14 +608,24 @@ class Libro extends Controller
     */
     public function filtrar()
     {
+        // inicio o continuo la sesión
+        session_start();
 
         # Obtengo la expresión de búsqueda
-        $expresion = $_GET['expresion'];
+        $expresion = htmlspecialchars($_GET['expresion']);
+
+        // obtengo el token CSRF
+        $csrf_token = htmlspecialchars($_GET['csrf_token']);
+
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            require_once 'controllers/error.php';
+            $controller = new Errores('Petición no válida');
+            exit();
+        }
 
         # Cargo el título
         $this->view->title = "Filtrar por: {$expresion} - Gestión de libros";
-
-
 
         # Obtengo los libros que coinciden con la expresión de búsqueda
         $this->view->libros = $this->model->filter($expresion);
@@ -635,6 +672,8 @@ class Libro extends Controller
             5 => 'Géneros',
             6 => 'Stock',
             7 => 'Precio',
+            8 => 'Fecha de Edición',
+            9 => 'ISBN'
         ];
 
         # Cargo el título

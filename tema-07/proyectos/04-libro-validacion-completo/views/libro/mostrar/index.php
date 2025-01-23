@@ -23,7 +23,7 @@
                 <h5 class="card-title"><?= $this->title ?></h5>
             </div>
             <div class="card-body">
-                <!-- Formulario de alumnos  sin edicion-->
+                <!-- Formulario de libros  sin edicion-->
                 <form>
 
                     <!-- id -->
@@ -48,6 +48,19 @@
                         <label for="apellidos" class="form-label">Editorial</label>
                         <input type="text" class="form-control" value="<?= $this->libro->editorial ?>" disabled>
                     </div>
+
+                    <!-- Fecha de Edición -->
+                    <div class="mb-3">
+                        <label for="fecha_edicion" class="form-label">Fecha de Edición</label>
+                        <input type="text" class="form-control" value="<?= $this->libro->fecha_edicion ?>" disabled>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="number" class="form-control" value="<?= $this->libro->isbn ?>" disabled>
+                    </div>
+
                     <!-- Géneros -->
                     <div class="mb-3">
                         <label for="generos" class="form-label">Géneros</label>

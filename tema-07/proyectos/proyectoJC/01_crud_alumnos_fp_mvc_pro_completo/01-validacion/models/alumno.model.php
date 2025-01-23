@@ -318,12 +318,13 @@ class alumnoModel extends Model
     /*
         método: validateIdAlumno
 
-        descripción: valida el id del alumno. Que exista en la base de datos
+        descripción: valida el id de un alumno. Que exista en la base de datos
 
         @param: 
             - id del alumno
 
     */
+
     public function validateIdAlumno(int $id) {
 
         try {
@@ -480,7 +481,7 @@ class alumnoModel extends Model
             $stmt->execute();
 
             # devuelvo objeto stmtatement
-            return $stmt->fetchAll();
+            return $stmt;
 
         } catch (PDOException $e) {
 

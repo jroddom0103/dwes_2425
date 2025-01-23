@@ -1,7 +1,7 @@
 <!-- menú principal Artículos -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="<?= URL ?>alumno">Alumnos</a>
+        <a class="navbar-brand" href="<?= URL ?>libro">Libros</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -26,19 +26,28 @@
                         <li><a class="dropdown-item"
                                 href="<?= URL ?>libro/ordenar/4/<?= $_SESSION['csrf_token'] ?>">Editorial</a></li>
                         <li><a class="dropdown-item"
-                                href="<?= URL ?>libro/ordenar/5/<?= $_SESSION['csrf_token'] ?>">Géneros</a></li>
+                                href="<?= URL ?>libro/ordenar/5/<?= $_SESSION['csrf_token'] ?>">Fecha de Edición</a></li>
                         <li><a class="dropdown-item"
-                                href="<?= URL ?>libro/ordenar/6/<?= $_SESSION['csrf_token'] ?>">Stock</a></li>
+                                href="<?= URL ?>libro/ordenar/6/<?= $_SESSION['csrf_token'] ?>">ISBN</a></li>
                         <li><a class="dropdown-item"
-                                href="<?= URL ?>libro/ordenar/7/<?= $_SESSION['csrf_token'] ?>">Precio</a></li>
+                                href="<?= URL ?>libro/ordenar/7/<?= $_SESSION['csrf_token'] ?>">Géneros</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/8/<?= $_SESSION['csrf_token'] ?>">Stock</a></li>
+                        <li><a class="dropdown-item"
+                                href="<?= URL ?>libro/ordenar/9/<?= $_SESSION['csrf_token'] ?>">Precio</a></li>
 
                     </ul>
                 </li>
 
             </ul>
-            <form class="d-flex" role="search" action="alumno/filtrar" method="GET">
+            <form class="d-flex" role="search" action="<?= URL ?>libro/filtrar" method="GET">
+
+                <!-- protección CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="expresion"
                     required>
+
                 <button class="btn btn-outline-primary" type="submit">Buscar</button>
             </form>
         </div>

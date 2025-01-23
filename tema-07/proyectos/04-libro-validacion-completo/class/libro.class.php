@@ -13,6 +13,8 @@
         public $titulo;
         public $autor;
         public $editorial;
+        public $fecha_edicion;
+        public $isbn;
         public $generos;
         public $stock;
         public $precio;
@@ -22,6 +24,8 @@
             $titulo = null,
             $autor = null,
             $editorial = null,
+            $fecha_edicion = null,
+            $isbn = null,
             $generos = null,
             $stock = null,
             $precio = null
@@ -30,6 +34,8 @@
             $this->titulo = $titulo;
             $this->autor = $autor;
             $this->editorial = $editorial;
+            $this->fecha_edicion = $fecha_edicion;
+            $this->isbn = $isbn;
             $this->generos = $generos;
             $this->stock = $stock;
             $this->precio = $precio;

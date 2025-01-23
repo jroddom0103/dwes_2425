@@ -70,6 +70,24 @@
                         </select>
                     </div>
 
+                    <!-- Fecha de Edición -->
+                    <div class="mb-3">
+                        <label for="fecha_edicion" class="form-label">Fecha de Edición</label>
+                        <input type="text" class="form-control
+                        <?= (isset($this->error['fecha_edicion'])) ? 'is-invalid' : null ?>" id="fecha_edicion" name="fecha_edicion"
+                            placeholder="Introduzca la fecha de edición" value="<?= htmlspecialchars($this->libro->fecha_edicion) ?>"
+                            required>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="number" class="form-control
+                        <?= (isset($this->error['isbn'])) ? 'is-invalid' : null ?>" id="isbn" name="isbn"
+                            step="0.01" placeholder="Introduzca el isbn"
+                            value="<?= htmlspecialchars($this->libro->isbn) ?>">
+                    </div>
+
                     <!-- Géneros -->
                     <div class="mb-3">
                         <label for="generos" class="form-label">Géneros</label>

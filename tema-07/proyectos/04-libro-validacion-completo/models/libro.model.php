@@ -26,6 +26,8 @@ class libroModel extends Model
                 libros.titulo,
                 autores.nombre as autor,
                 editoriales.nombre as editorial,
+                libros.fecha_edicion,
+                libros.isbn,
                 GROUP_CONCAT(generos.tema ORDER BY generos.tema ASC SEPARATOR ', ') as generos,
                 libros.stock,
                 libros.precio
@@ -108,6 +110,8 @@ class libroModel extends Model
                     titulo,
                     autor_id,
                     editorial_id,
+                    fecha_edicion,
+                    isbn,
                     generos_id,
                     stock,
                     precio
@@ -115,6 +119,8 @@ class libroModel extends Model
                     :titulo,
                     :autor,
                     :editorial,
+                    :fecha_edicion,
+                    :isbn,
                     :generos_id,
                     :stock,
                     :precio
@@ -127,6 +133,8 @@ class libroModel extends Model
             $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR);
             $stmt->bindParam(':autor', $libro->autor, PDO::PARAM_INT);
             $stmt->bindParam(':editorial', $libro->editorial, PDO::PARAM_INT);
+            $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR);
+            $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_INT);
             $stmt->bindParam(':generos_id', $libro->generos, PDO::PARAM_STR);
             $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
             $stmt->bindParam(':precio', $libro->precio, PDO::PARAM_STR);
@@ -155,6 +163,8 @@ class libroModel extends Model
                 libros.titulo,
                 autores.nombre as autor,
                 editoriales.nombre as editorial,
+                libros.fecha_edicion,
+                libros.isbn,
                 libros.stock,
                 libros.precio
             FROM 
@@ -313,6 +323,31 @@ class libroModel extends Model
         }
     }
 
+    /*
+        método: get_isbn
+
+        descripción: obtiene el isbn correspondiente al libro
+
+        @param: id del libro
+        devuelve: isbn
+    */
+    public function get_isbn($isbn)
+    {
+        try {
+            $sql = "SELECT isbn FROM libros WHERE isbn = :isbn";
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':isbn', $isbn, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+        }
+    }
+
 
     /*
         método: update
@@ -331,6 +366,8 @@ class libroModel extends Model
                         titulo = :titulo,
                         autor_id = :autor,
                         editorial_id = :editorial,
+                        fecha_edicion = :fecha_edicion,
+                        isbn = :isbn,
                         generos_id = :generos_id,
                         stock = :stock,
                         precio = :precio,
@@ -343,6 +380,8 @@ class libroModel extends Model
             $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR);
             $stmt->bindParam(':autor', $libro->autor, PDO::PARAM_INT);
             $stmt->bindParam(':editorial', $libro->editorial, PDO::PARAM_INT);
+            $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR);
+            $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_INT);
             $stmt->bindParam(':generos_id', $libro->generos, PDO::PARAM_STR);
             $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
             $stmt->bindParam(':precio', $libro->precio, PDO::PARAM_STR);
@@ -440,6 +479,41 @@ class libroModel extends Model
     }
 
     /*
+        método: get_genero_id
+
+        Extrae todos los géneros de las editoriales
+    */
+    public function get_genero_id($genero_id)
+{
+    try {
+        // sentencia sql
+        $sql = "SELECT id FROM generos WHERE id = :genero_id";
+
+        // conectamos con la base de datos
+        $conexion = $this->db->connect();
+
+        // ejecuto prepare
+        $stmt = $conexion->prepare($sql);
+
+        // bindeo el parámetro
+        $stmt->bindParam(':genero_id', $genero_id, PDO::PARAM_INT);
+
+        // ejecutamos
+        $stmt->execute();
+
+        // devuelvo el resultado
+        return $stmt->fetch() !== false;
+    } catch (PDOException $e) {
+        // error base de datos
+        require 'template/partials/errorDB.partial.php';
+        $stmt = null;
+        $conexion = null;
+        $this->db = null;
+        exit();
+    }
+}
+
+    /*
         método: delete
 
         descripción: elimina un libro
@@ -524,7 +598,7 @@ class libroModel extends Model
     /*
         método: filter
 
-        descripción: filtra los alumnos por una expresión
+        descripción: filtra los libros por una expresión
 
         @param: expresión a buscar
     */
@@ -532,32 +606,26 @@ class libroModel extends Model
     {
         try {
             $sql = "
-
             SELECT 
-                alumnos.id,
-                concat_ws(', ', alumnos.apellidos, alumnos.nombre) alumno,
-                alumnos.email,
-                alumnos.telefono,
-                alumnos.nacionalidad,
-                alumnos.dni,
-                timestampdiff(YEAR,  alumnos.fechaNac, NOW() ) edad,
-                cursos.nombreCorto curso
+                libros.id,
+                libros.titulo,
+                autores.nombre as autor,
+                editoriales.nombre as editorial,
+                libros.fecha_edicion,
+                libros.isbn,
+                GROUP_CONCAT(generos.tema ORDER BY generos.tema ASC SEPARATOR ', ') as generos,
+                libros.stock,
+                libros.precio
             FROM
                 libros
             INNER JOIN
-                autores
-            ON 
-                autores.id = libros.autor_id
+                autores ON libros.autor_id = autores.id
             INNER JOIN
-                editoriales
-            ON
-                editoriales.id = libros.editorial_id
-            INNER JOIN
-                generos
-            ON
-                FIND_IN_SET(generos.id, libros.generos_id) > 0
+                editoriales ON libros.editorial_id = editoriales.id
+            LEFT JOIN
+                generos ON FIND_IN_SET(generos.id, libros.generos_id)
             GROUP BY
-                libros.id
+                libros.id, libros.titulo, autores.nombre, editoriales.nombre, libros.stock, libros.precio
             HAVING
                 CONCAT_WS(
                     ', ',
@@ -565,18 +633,14 @@ class libroModel extends Model
                     libros.titulo,
                     autor,
                     editorial,
-                    generos_nombres,
-                    libros.stock,
-                    libros.precio,
                     libros.fecha_edicion,
-                    libros.isbn
-                
-                
-                )            
-                LIKE :expresion
+                    libros.isbn,
+                    generos,
+                    libros.stock,
+                    libros.precio
+                ) LIKE :expresion
             ORDER BY
-                libros.id               
-            ";
+                libros.id";
 
             # Conectar con la base de datos
             $conexion = $this->db->connect();
@@ -586,7 +650,7 @@ class libroModel extends Model
             $stmt->bindValue(':expresion', '%' . $expresion . '%', PDO::PARAM_STR);
             $stmt->setFetchMode(PDO::FETCH_OBJ);
             $stmt->execute();
-            return $stmt;
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
 
             // error base de datos
@@ -608,10 +672,10 @@ class libroModel extends Model
     public function order(int $criterio)
     {
         // Lista de columnas permitidas para ordenar
-        $columnasPermitidas = ['id', 'titulo', 'autor', 'editorial', 'generos', 'stock', 'precio'];
+        $columnasPermitidas = ['id', 'titulo', 'autor', 'editorial', 'fecha_edicion', 'isbn', 'generos', 'stock', 'precio'];
 
         // Validar el criterio de ordenación
-        if ($criterio < 1 || $criterio > 7) {
+        if ($criterio < 1 || $criterio > 9) {
             throw new InvalidArgumentException('Criterio de ordenación no válido');
         }
 
@@ -625,6 +689,8 @@ class libroModel extends Model
                 libros.titulo,
                 autores.nombre as autor,
                 editoriales.nombre as editorial,
+                libros.fecha_edicion,
+                libros.isbn,
                 GROUP_CONCAT(generos.tema ORDER BY generos.tema ASC SEPARATOR ', ') as generos,
                 libros.stock,
                 libros.precio

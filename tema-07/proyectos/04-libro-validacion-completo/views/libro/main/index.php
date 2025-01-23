@@ -14,6 +14,9 @@
     <div class="container">
         <br><br><br><br>
 
+        <!-- capa de errores -->
+        <?php require_once 'template/partials/error.partial.php' ?>
+
         <!-- capa de mensajes -->
         <?php require_once 'template/partials/mensaje.partial.php' ?>
 
@@ -38,6 +41,8 @@
                                 <th>Título</th>
                                 <th>Autor</th>
                                 <th>Editorial</th>
+                                <th>Fecha de Edición</th>
+                                <th>ISBN</th>
                                 <th>Géneros</th>
                                 <th class='text-end'>Stock</th>
                                 <th class='text-end'>Precio</th>
@@ -54,6 +59,8 @@
                                     <td><?= $libro->titulo ?></td>
                                     <td><?= $libro->autor ?></td>
                                     <td><?= $libro->editorial ?></td>
+                                    <td><?= $libro->fecha_edicion ?></td>
+                                    <td><?= $libro->isbn ?></td>
                                     <td><?= $libro->generos ?></td>
                                     <td class='text-end'><?= $libro->stock ?></td>
                                     <td class='text-end'><?= $libro->precio ?></td>

@@ -116,11 +116,11 @@ class Alumno extends Controller
 
         // Validación CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-            require_once 'controllers/error.php';
-            $controller = new Errores('Petición no válida');
+            // require_once 'controllers/error.php';
+            // $controller = new Errores('Petición no válida');
+            // exit();
+            header('location:' . URL . 'errores');
             exit();
-            // header('location:' . URL . 'error');
-            // die('Petición no válida'); 
         }
 
         // Recogemos los detalles del formulario saneados
@@ -533,13 +533,13 @@ class Alumno extends Controller
     public function eliminar($param = [])
     {
 
-        // Inicio o continuo la sesión
+        // inicio o continuo la sesión
         session_start();
 
-        // Obtengo el id del libro que voy a eliminar
+        // obtengo el id del alumno que voy a eliminar
         $id = htmlspecialchars($param[0]);
 
-        // Obtengo el token CSRF
+        // obtengo el token CSRF
         $csrf_token = $param[1];
 
         // Validación CSRF
@@ -549,13 +549,14 @@ class Alumno extends Controller
             exit();
         }
 
-        // Validar id del libro
-        if(!$this->model->validateIdLibro($id))
-        {
+        // Validar id del alumno
+        // validateIdAlumno($id) si existe devuelve TRUE
+        if (!$this->model->validateIdAlumno($id)) {
             // Genero mensaje de error
             $_SESSION['error'] = 'ID no válido';
 
-            header('location:'.URL.'libro');
+            // redireciona al main de alumno
+            header('location:' . URL . 'alumno');
             exit();
         }
 
@@ -582,14 +583,13 @@ class Alumno extends Controller
     */
     public function mostrar($param = [])
     {
-
-        // Inicio o continuo la sesión
+        // inicio o continuo la sesión
         session_start();
 
-        // Obtengo el id del alumno que voy a eliminar
+        // obtengo el id del alumno que voy a eliminar
         $id = htmlspecialchars($param[0]);
 
-        // Obtengo el token CSRF
+        // obtengo el token CSRF
         $csrf_token = $param[1];
 
         // Validación CSRF
@@ -600,12 +600,13 @@ class Alumno extends Controller
         }
 
         // Validar id del alumno
-        if(!$this->model->validateIdAlumno($id))
-        {
+        // validateIdAlumno($id) si existe devuelve TRUE
+        if (!$this->model->validateIdAlumno($id)) {
             // Genero mensaje de error
             $_SESSION['error'] = 'ID no válido';
 
-            header('location:'.URL.'alumno');
+            // redireciona al main de alumno
+            header('location:' . URL . 'alumno');
             exit();
         }
 
@@ -637,13 +638,13 @@ class Alumno extends Controller
     */
     public function filtrar()
     {
-
-        // Inicio o continuo la sesión
+        // inicio o continuo la sesión
         session_start();
 
         # Obtengo la expresión de búsqueda
         $expresion = htmlspecialchars($_GET['expresion']);
 
+        // obtengo el token CSRF
         $csrf_token = htmlspecialchars($_GET['csrf_token']);
 
         // Validación CSRF
@@ -651,8 +652,6 @@ class Alumno extends Controller
             require_once 'controllers/error.php';
             $controller = new Errores('Petición no válida');
             exit();
-            // header('location:' . URL . 'error');
-            // die('Petición no válida'); 
         }
 
         # Cargo el título
@@ -677,14 +676,13 @@ class Alumno extends Controller
     */
     public function ordenar($param = [])
     {
-
-        // Inicio o continuo la sesión
+        // inicio o continuo la sesión
         session_start();
 
         // Obtener criterio
-        $id = htmlspecialchars($param[0]);
+        $id = (int) htmlspecialchars($param[0]);
 
-        // Obtengo el token CSRF
+        // Obtener csrf_token
         $csrf_token = $param[1];
 
         // Validación CSRF
@@ -705,7 +703,6 @@ class Alumno extends Controller
             7 => 'Curso',
             8 => 'Edad'
         ];
-
 
         # Cargo el título
         $this->view->title = "Ordenar por {$criterios[$id]} - Gestión de Alumnos";
