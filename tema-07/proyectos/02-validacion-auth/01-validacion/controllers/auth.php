@@ -114,14 +114,22 @@ class Auth extends Controller
     }
 
     /*
-        Método create()
+        Método validate_register()
 
-        Permite añadir nuevo alumno al formulario
+        Permite:
+            - Validar nuevo usuario
+            - En caso de error de validación. Retroalimenta el formulario y muestra errores
+            - En caso de validación. Añade usuario con perfil de registrado.
 
-        url asociada: /alumno/create
-        POST: detalles del alumno
+        url asociada: /auth/validate_register
+        
+        POST: detalles del nuevo usuario
+            - name
+            - email
+            - password
+            - password-confirm
     */
-    public function create()
+    public function validate_register()
     {
 
         // inicio o continuo la sesión
@@ -138,39 +146,19 @@ class Auth extends Controller
 
         // Recogemos los detalles del formulario saneados
         // Prevenir ataques XSS
-        $nombre = filter_var($_POST['nombre'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $apellidos = filter_var($_POST['apellidos'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $fechaNac = filter_var($_POST['fechaNac'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $dni = filter_var($_POST['dni'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
-        $telefono = filter_var($_POST['telefono'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $nacionalidad = filter_var($_POST['nacionalidad'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $id_curso = filter_var($_POST['id_curso'] ??= '', FILTER_SANITIZE_NUMBER_INT);
+        $password = filter_var($_POST['password'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password_confirm = filter_var($_POST['password_confirm'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
 
-        // Creamos un objeto de la clase alumno con los detalles del formulario
-        $alumno = new classAlumno(
-            null,
-            $nombre,
-            $apellidos,
-            $email,
-            $telefono,
-            null,
-            null,
-            null,
-            $nacionalidad,
-            $dni,
-            $fechaNac,
-            $id_curso
-        );
-
-        // Validación de los datos
+        // Validación de usuarios
 
         // Creo un array para almacenar los errores
         $error = [];
 
-        // Validación del nombre
+        // Validación name
         // Reglas: obligatorio
-        if (empty($nombre)) {
+        if (empty($name)) {
             $error['nombre'] = 'El nombre es obligatorio';
         }
 
