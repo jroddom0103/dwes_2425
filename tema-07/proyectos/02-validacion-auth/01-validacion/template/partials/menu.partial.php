@@ -1,5 +1,7 @@
 <!-- Navigation -->
 
+<!-- En los enlaces pondremos el nombre del controlador -->
+
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">MVC - Gestión FP</a>
@@ -11,20 +13,17 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="<?= URL ?>index">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>alumno">Alumnos</a>
-        </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" href="<?= URL ?>asignatura">Asignaturas</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Link</a>
-        </li> -->
       </ul>
       <div class="d-flex">
-       
+        <div class="collapse navbar-collapse" id="exCollapsingNavbar">
+              <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
+                  <li class="nav-item"><a href="<?= URL ?>auth/login" class="nav-link active">Login</a></li>
+                  <li class="nav-item"><a href="<?= URL ?>auth/register" class="nav-link active">Register</a></li>
+              </ul>
+        </div>
       </div>
     </div>
+    
   </div>
 </nav>
 
