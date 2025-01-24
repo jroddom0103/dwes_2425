@@ -159,7 +159,9 @@ class Auth extends Controller
         // Validación name
         // Reglas: obligatorio
         if (empty($name)) {
-            $error['nombre'] = 'El nombre es obligatorio';
+            $error['name'] = 'El nombre es obligatorio';
+        }else if(!$this->model->validateName($name)){
+            $error['name'] = 'El nombre ya existe';
         }
 
         // Validación de los apellidos
