@@ -3,7 +3,7 @@
 /*
     Manejo de directorios
 
-    glog() - permite establecer s 
+    glog() - permite establecer filtros en la selección de ficheros
 
     Funciones:
 
