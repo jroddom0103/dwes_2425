@@ -278,7 +278,7 @@ class Libro extends Controller
         $error['autor'] = 'El autor es obligatorio';
     } elseif (!is_numeric($autor)) {
         $error['autor'] = 'El autor debe ser un número';
-    } elseif (!$this->model->get_autor_id($autor)) {
+    } elseif (!$this->model->autorExiste($autor)) {
         $error['autor'] = 'El autor no existe';
     }
 
@@ -287,7 +287,7 @@ class Libro extends Controller
         $error['editorial'] = 'La editorial es obligatoria';
     } elseif (!is_numeric($editorial)) {
         $error['editorial'] = 'La editorial debe ser un número';
-    } elseif (!$this->model->get_editorial_id($editorial)) {
+    } elseif (!$this->model->editorialExiste($editorial)) {
         $error['editorial'] = 'La editorial no existe';
     }
 
@@ -442,6 +442,9 @@ class Libro extends Controller
         // inicio o continuo la sesión
         session_start();
 
+        var_dump('Hola');
+        exit();
+
         // obtengo el token CSRF para pasarlo luego al formulario editar en caso de error
         $csrf_token = $param[1];
 
@@ -476,13 +479,13 @@ class Libro extends Controller
         $libro = new classlibro(
             $id,
             $titulo,
-            $autor,
-            $editorial,
+            $precio,
+            $stock,
             $fecha_edicion,
             $isbn,
-            $generos_id,
-            $stock,
-            $precio
+            $autor,
+            $editorial,
+            $generos_id
         );
 
         // Obtengo los detalles del libro de la base de datos
@@ -966,23 +969,23 @@ class Libro extends Controller
         while (($linea = fgetcsv($fichero, 0, ';')) !== FALSE) {
             $libros[] = $linea;
 
-            // Validar DNI
-            if (!$this->model->validateUniqueDNI($linea[5])) {
-                $_SESSION['mensaje_error'] = 'El DNI ' . $linea[5] . ' ya existe';
+            // Validar ISBN
+            if (!$this->model->validateUniqueISBN($linea[5])) {
+                $_SESSION['mensaje_error'] = 'El ISBN ' . $linea[5] . ' ya existe';
                 header('location:' . URL . 'libro/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }
 
-            // Validar email
-            if (!$this->model->validateUniqueEmail($linea[2])) {
-                $_SESSION['mensaje_error'] = 'El email ' . $linea[2] . ' ya existe';
+            // Validar el autor
+            if (!$this->model->autorNombreExiste($linea[2])) {
+                $_SESSION['mensaje_error'] = 'El autor ' . $linea[2] . ' no existe';
                 header('location:' . URL . 'libro/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }
 
-            // Validar id_curso
-            if (!$this->model->validateForeignKeyCurso($linea[7])) {
-                $_SESSION['mensaje_error'] = 'El curso ' . $linea[7] . ' no existe';
+            // Validar la editorial
+            if (!$this->model->editorialNombreExiste($linea[3])) {
+                $_SESSION['mensaje_error'] = 'La editorial ' . $linea[7] . ' no existe';
                 header('location:' . URL . 'libro/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }

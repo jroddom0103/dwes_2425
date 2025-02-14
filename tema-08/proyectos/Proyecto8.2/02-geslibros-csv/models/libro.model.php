@@ -133,11 +133,11 @@ class libroModel extends Model
             $stmt = $conexion->prepare($sql);
 
             $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR);
-            $stmt->bindParam(':autor', $libro->autor, PDO::PARAM_INT);
-            $stmt->bindParam(':editorial', $libro->editorial, PDO::PARAM_INT);
+            $stmt->bindParam(':autor', $libro->autor_id, PDO::PARAM_INT);
+            $stmt->bindParam(':editorial', $libro->editorial_id, PDO::PARAM_INT);
             $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR);
             $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_INT);
-            $stmt->bindParam(':generos_id', $libro->generos, PDO::PARAM_STR);
+            $stmt->bindParam(':generos_id', $libro->generos_id, PDO::PARAM_STR);
             $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
             $stmt->bindParam(':precio', $libro->precio, PDO::PARAM_STR);
 
@@ -286,22 +286,22 @@ class libroModel extends Model
         @param: id del libro
         devuelve: ID del autor
         */
-        public function get_autor_id($libro_id)
-        {
-            try {
-                $sql = "SELECT autor_id FROM libros WHERE id = :libro_id";
-                $conexion = $this->db->connect();
-                $stmt = $conexion->prepare($sql);
-                $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
-                $stmt->execute();
-                return $stmt->fetchColumn();
-            } catch (PDOException $e) {
-                require 'template/partials/errorDB.partial.php';
-                $stmt = null;
-                $conexion = null;
-                $this->db = null;
-            }
+    public function get_autor_id($libro_id)
+    {
+        try {
+            $sql = "SELECT autor_id FROM libros WHERE id = :libro_id";
+            $conexion = $this->db->connect();
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
         }
+    }
 
     /*
         método: get_editorial_id
@@ -483,41 +483,94 @@ class libroModel extends Model
         }
     }
 
-
     /*
         método: get_genero_id
 
         Extrae todos los géneros de las editoriales
     */
     public function get_genero_id($genero_id)
-{
-    try {
-        // sentencia sql
-        $sql = "SELECT id FROM generos WHERE id = :genero_id";
+    {
+        try {
+            // sentencia sql
+            $sql = "SELECT id FROM generos WHERE id = :genero_id";
 
-        // conectamos con la base de datos
-        $conexion = $this->db->connect();
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
 
-        // ejecuto prepare
-        $stmt = $conexion->prepare($sql);
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
 
-        // bindeo el parámetro
-        $stmt->bindParam(':genero_id', $genero_id, PDO::PARAM_INT);
+            // bindeo el parámetro
+            $stmt->bindParam(':genero_id', $genero_id, PDO::PARAM_INT);
 
-        // ejecutamos
-        $stmt->execute();
+            // ejecutamos
+            $stmt->execute();
 
-        // devuelvo el resultado
-        return $stmt->fetch() !== false;
-    } catch (PDOException $e) {
-        // error base de datos
-        require 'template/partials/errorDB.partial.php';
-        $stmt = null;
-        $conexion = null;
-        $this->db = null;
-        exit();
+            // devuelvo el resultado
+            return $stmt->fetch() !== false;
+        } catch (PDOException $e) {
+            // error base de datos
+            require 'template/partials/errorDB.partial.php';
+            $stmt = null;
+            $conexion = null;
+            $this->db = null;
+            exit();
+        }
     }
-}
+
+    /**
+     * Comprueba si un autor existe
+     * @param mixed $autor_id
+     * @return bool
+     */
+    public function autorExiste($autor_id)
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM autores WHERE id = :autor_id";
+
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
+
+            $stmt->bindParam(':autor_id', $autor_id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return $stmt->fetchColumn() > 0;
+
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * // Comprueba si una editorial existe
+     * @param mixed $editorial_id
+     * @return bool
+     */
+    public function editorialExiste($editorial_id)
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM editoriales WHERE id = :editorial_id";
+
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
+
+            $stmt->bindParam(':editorial_id', $editorial_id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return $stmt->fetchColumn() > 0;
+
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 
     /*
         método: delete
@@ -739,131 +792,40 @@ class libroModel extends Model
     }
 
     /*
-        método: validateUniqueDni
+        método: validateUniqueISBN
 
-        descripción: valida el DNI de un libro. Que no exista en la base de datos
+        descripción: valida el ISBN de un libro. Que no exista en la base de datos
 
         @param: 
-            - dni del libro
+            - isbn del libro
 
     */
-    public function validateUniqueDNI($dni) {
+    public function validateUniqueISBN($isbn)
+    {
 
         try {
 
             $sql = "
                 SELECT 
-                    dni
+                    isbn
                 FROM 
                     libros
                 WHERE
-                    dni = :dni
+                    isbn = :isbn
             ";
 
             $conexion = $this->db->connect();
             $stmt = $conexion->prepare($sql);
-            $stmt->bindParam(':dni', $dni, PDO::PARAM_STR, 9);
+            $stmt->bindParam(':isbn', $isbn, PDO::PARAM_STR, 9);
             $stmt->setFetchMode(PDO::FETCH_OBJ);
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
                 return FALSE;
-            } 
+            }
 
             return TRUE;
-            
 
-        } catch (PDOException $e) {
-
-            // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
-            $stmt = null;
-            $conexion = null;
-            $this->db = null;
-            exit();
-        }
-    }
-
-    /*
-        método: validateUniqueEmail
-
-        descripción: valida el email de un libro. Que no exista en la base de datos
-
-        @param: 
-            - email del libro
-
-    */
-    public function validateUniqueEmail($email) {
-
-        try {
-
-            $sql = "
-                SELECT 
-                    email
-                FROM 
-                    libros
-                WHERE
-                    email = :email
-            ";
-
-            $conexion = $this->db->connect();
-            $stmt = $conexion->prepare($sql);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-
-            if ($stmt->rowCount() > 0) {
-                return FALSE;
-            } 
-
-            return TRUE;
-            
-
-        } catch (PDOException $e) {
-
-            // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
-            $stmt = null;
-            $conexion = null;
-            $this->db = null;
-            exit();
-        }
-    }
-
-    /*
-        método: validateForeignKeyCurso($id_curso)
-
-        descripción: valida el id_curso seleccionado. Que exista en la tabla cursos
-
-        @param: 
-            - $id_curso
-
-    */
-    public function validateForeignKeyCurso(int $id_curso) {
-
-        try {
-
-            $sql = "
-                SELECT 
-                    id
-                FROM 
-                    cursos
-                WHERE
-                    id = :id_curso
-            ";
-
-            $conexion = $this->db->connect();
-            $stmt = $conexion->prepare($sql);
-            $stmt->bindParam(':id_curso', $id_curso, PDO::PARAM_INT);
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $stmt->execute();
-
-            if ($stmt->rowCount() == 1) {
-                return TRUE;
-            } 
-
-            return FALSE;
-            
 
         } catch (PDOException $e) {
 
@@ -882,50 +844,54 @@ class libroModel extends Model
         Extre los detalles de la tabla libros
     */
     public function get_csv()
-    {
+{
+    try {
+        // sentencia sql
+        $sql = "SELECT 
+                    libros.id,
+                    libros.titulo,
+                    autores.nombre as autor,
+                    editoriales.nombre as editorial,
+                    libros.fecha_edicion,
+                    libros.isbn,
+                    GROUP_CONCAT(generos.tema ORDER BY generos.tema ASC SEPARATOR ', ') as generos,
+                    libros.stock,
+                    libros.precio
+                FROM 
+                    libros
+                INNER JOIN
+                    autores ON libros.autor_id = autores.id
+                INNER JOIN
+                    editoriales ON libros.editorial_id = editoriales.id
+                LEFT JOIN
+                    generos ON FIND_IN_SET(generos.id, libros.generos_id)
+                GROUP BY 
+                    libros.id, libros.titulo, autores.nombre, editoriales.nombre, libros.stock, libros.precio
+                ORDER BY 
+                    libros.id";
 
-        try {
+        // conectamos con la base de datos
+        $conexion = $this->db->connect();
 
-            // sentencia sql
-            $sql = "SELECT 
-                libros.id,
-                CONCAT_WS(', ', libros.apellidos, libros.nombre) as libro,
-                libros.email,
-                libros.telefono,
-                libros.nacionalidad,
-                libros.dni,
-                timestampdiff(YEAR, libros.fechaNac, now()) as edad,
-                cursos.nombreCorto as curso
-            FROM 
-                libros 
-            INNER JOIN
-                cursos
-            ON libros.id_curso = cursos.id
-            ORDER BY libros.id";
+        // ejecuto prepare
+        $stmt = $conexion->prepare($sql);
 
-            // conectamos con la base de datos
-            $conexion = $this->db->connect();
+        // establezco tipo fetch
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-            // ejecuto prepare
-            $stmt = $conexion->prepare($sql);
+        // ejecutamos
+        $stmt->execute();
 
-            // establezco tipo fetch
-            $stmt->setFetchMode(PDO::FETCH_NUM);
-
-            // ejecutamos
-            $stmt->execute();
-
-            // devuelvo objeto stmtatement
-            return $stmt;
-        } catch (PDOException $e) {
-
-            // error base de datos
-            require 'template/partials/errorDB.partial.php';
-            $stmt = null;
-            $conexion = null;
-            $this->db = null;
-        }
+        // devuelvo objeto stmtatement
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        // error base de datos
+        require 'template/partials/errorDB.partial.php';
+        $stmt = null;
+        $conexion = null;
+        $this->db = null;
     }
+}
 
     /*
         método: import
@@ -937,60 +903,109 @@ class libroModel extends Model
             - $libros array con los datos del fichero csv
 
     */
-    public function import($libros) {
+    public function import($libros)
+{
+    try {
+        $sql = "INSERT INTO libros (
+                    titulo,
+                    autor_id,
+                    editorial_id,
+                    fecha_edicion,
+                    isbn,
+                    generos_id,
+                    stock,
+                    precio
+                ) VALUES (
+                    :titulo,
+                    :autor_id,
+                    :editorial_id,
+                    :fecha_edicion,
+                    :isbn,
+                    :generos_id,
+                    :stock,
+                    :precio
+                )";
 
+        # Conectar con la base de datos
+        $conexion = $this->db->connect();
+        $stmt = $conexion->prepare($sql);
+
+        foreach ($libros as $libro) {
+            $stmt->bindParam(':titulo', $libro[0], PDO::PARAM_STR);
+            $stmt->bindParam(':autor_id', $libro[1], PDO::PARAM_INT);
+            $stmt->bindParam(':editorial_id', $libro[2], PDO::PARAM_INT);
+            $stmt->bindParam(':fecha_edicion', $libro[3], PDO::PARAM_STR);
+            $stmt->bindParam(':isbn', $libro[4], PDO::PARAM_INT);
+            $stmt->bindParam(':generos_id', $libro[5], PDO::PARAM_STR);
+            $stmt->bindParam(':stock', $libro[6], PDO::PARAM_INT);
+            $stmt->bindParam(':precio', $libro[7], PDO::PARAM_STR);
+
+            // Añadir libro
+            $stmt->execute();
+        }
+
+        // devuelvo el número de libros importados
+        return count($libros);
+    } catch (PDOException $e) {
+        // error base de datos
+        require_once 'template/partials/errorDB.partial.php';
+        $stmt = null;
+        $conexion = null;
+        $this->db = null;
+    }
+}
+
+/**
+     * Comprueba si un autor existe
+     * @param mixed $autor_id
+     * @return bool
+     */
+    public function autorNombreExiste($autor)
+    {
         try {
+            $sql = "SELECT COUNT(*) FROM autores WHERE nombre = :autor";
 
-            $sql = "INSERT INTO libros (
-                    nombre,
-                    apellidos,
-                    email,
-                    telefono,
-                    nacionalidad,
-                    dni,
-                    fechaNac,
-                    id_curso
-                )
-                VALUES (
-                    :nombre,
-                    :apellidos,
-                    :email,
-                    :telefono,
-                    :nacionalidad,
-                    :dni,
-                    :fechaNac,
-                    :id_curso
-                )
-            ";
-            # Conectar con la base de datos
+            // conectamos con la base de datos
             $conexion = $this->db->connect();
 
+            // ejecuto prepare
             $stmt = $conexion->prepare($sql);
 
-            foreach ($libros as $libro) {
+            $stmt->bindParam(':autor', $autor, PDO::PARAM_INT);
 
-                $stmt->bindParam(':nombre', $libro[0], PDO::PARAM_STR, 30);
-                $stmt->bindParam(':apellidos', $libro[1], PDO::PARAM_STR, 50);
-                $stmt->bindParam(':email', $libro[2], PDO::PARAM_STR, 50);
-                $stmt->bindParam(':telefono', $libro[3], PDO::PARAM_STR, 13);
-                $stmt->bindParam(':nacionalidad', $libro[4], PDO::PARAM_STR, 30);
-                $stmt->bindParam(':dni', $libro[5], PDO::PARAM_STR, 9);
-                $stmt->bindParam(':fechaNac', $libro[6], PDO::PARAM_STR);
-                $stmt->bindParam(':id_curso', $libro[7], PDO::PARAM_INT);
+            $stmt->execute();
 
-                // añado libro
-                $stmt->execute();
-            }
-
-            // devuelvo el número de libros importados
-            return count($libros);
+            return $stmt->fetchColumn() > 0;
 
         } catch (PDOException $e) {
-            // error base de datos
-            require_once 'template/partials/errorDB.partial.php';
-            $stmt = null;
-            $conexion = null;
-            $this->db = null;
+            return false;
+        }
+    }
+
+    /**
+     * // Comprueba si una editorial existe
+     * @param mixed $editorial_id
+     * @return bool
+     */
+    public function editorialNombreExiste($editorial)
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM editoriales WHERE nombre = :editorial";
+
+            // conectamos con la base de datos
+            $conexion = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $conexion->prepare($sql);
+
+            $stmt->bindParam(':editorial', $editorial, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return $stmt->fetchColumn() > 0;
+
+        } catch (PDOException $e) {
+            return false;
         }
     }
 

@@ -8,7 +8,7 @@
 
 <body>
     <!-- Menú fijo superior -->
-    <?php require_once 'template/partials/menu.partial.php' ?>
+    <?php require_once 'template/partials/menu.auth.partial.php' ?>
 
     <!-- Capa Principal -->
     <div class="container">
@@ -54,8 +54,8 @@
                         <label for="autor" class="form-label">Autor</label>
                         <select class="form-control" id="autor" name="autor" required>
                             <option value="" disabled selected>Seleccione un autor</option>
-                            <?php foreach ($this->autores as $indice => $autor): ?>
-                                <option value="<?= htmlspecialchars($indice) ?>" <?= isset($this->libro->autor_id) && $this->libro->autor_id == $indice ? 'selected' : '' ?>>
+                            <?php foreach ($this->autores as $autor): ?>
+                                <option value="<?= htmlspecialchars($autor['id']) ?>" <?= isset($this->libro->autor_id) && $this->libro->autor_id == $autor['id'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($autor['nombre']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -70,8 +70,8 @@
                         <label for="editorial" class="form-label">Editorial</label>
                         <select class="form-control" id="editorial" name="editorial" required>
                             <option value="" disabled selected>Seleccione una editorial</option>
-                            <?php foreach ($this->editoriales as $indice => $editorial): ?>
-                                <option value="<?= htmlspecialchars($indice) ?>" <?= isset($this->libro->editorial_id) && $this->libro->editorial_id == $indice ? 'selected' : '' ?>>
+                            <?php foreach ($this->editoriales as $editorial): ?>
+                                <option value="<?= htmlspecialchars($editorial['id']) ?>" <?= isset($this->libro->editorial_id) && $this->libro->editorial_id == $editorial['id'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($editorial['nombre']) ?>
                                 </option>
                             <?php endforeach; ?>
