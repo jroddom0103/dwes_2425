@@ -11,7 +11,7 @@ class Pdf_libros extends FPDF_UTF8
 
         // Celdas
         $this->Cell(50, 10, 'Geslibros 1.0', 'B', 0, 'L');
-        $this->Cell(100, 10, 'Rodríguez Domínguez Juan Antonio', 'B', 0, 'C');
+        $this->Cell(100, 10, 'Rodríguez Domínguez, Juan Antonio', 'B', 0, 'C');
         $this->Cell(0, 10, '2DAW 24/25', 'B', 1, 'R');
         
         // Salto de línea

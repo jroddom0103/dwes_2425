@@ -29,11 +29,14 @@
             <div class="card-body">
                 <!-- Formulario de libros  -->
                 <!-- Enviar al controlador create -->
-                <form action="<?= URL ?>libro/update/<?=$this->id?>/<?=$this->csrf_token?>" method="POST">
+                <form action="<?= URL ?>libro/update/<?= $this->libro->id ?>" method="POST">
 
                     <!-- protección CSRF -->
                     <input type="hidden" name="csrf_token"
                         value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+
+                    <!-- ID del libro -->
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($this->libro->id) ?>">
 
                     <!-- Título -->
                     <div class="mb-3">
@@ -48,12 +51,11 @@
                         </span>
                     </div>
 
-
                     <!-- Autor -->
                     <div class="mb-3">
                         <label for="autor" class="form-label">Autor</label>
                         <select class="form-control" id="autor" name="autor" required>
-                            <option value="" disabled selected>Seleccione un autor</option>
+                            <option value="" disabled>Seleccione un autor</option>
                             <?php foreach ($this->autores as $autor): ?>
                                 <option value="<?= htmlspecialchars($autor['id']) ?>" <?= isset($this->libro->autor_id) && $this->libro->autor_id == $autor['id'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($autor['nombre']) ?>
@@ -69,9 +71,10 @@
                     <div class="mb-3">
                         <label for="editorial" class="form-label">Editorial</label>
                         <select class="form-control" id="editorial" name="editorial" required>
-                            <option value="" disabled selected>Seleccione una editorial</option>
+                            <option value="" disabled>Seleccione una editorial</option>
                             <?php foreach ($this->editoriales as $editorial): ?>
-                                <option value="<?= htmlspecialchars($editorial['id']) ?>" <?= isset($this->libro->editorial_id) && $this->libro->editorial_id == $editorial['id'] ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($editorial['id']) ?>"
+                                    <?= isset($this->libro->editorial_id) && $this->libro->editorial_id == $editorial['id'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($editorial['nombre']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -83,7 +86,7 @@
 
                     <!-- Fecha de edición -->
                     <div class="mb-3">
-                        <label for="precio" class="form-label">Fecha de Edición</label>
+                        <label for="fecha_edicion" class="form-label">Fecha de Edición</label>
                         <input type="date" class="form-control
                         <?= (isset($this->error['fecha_edicion'])) ? 'is-invalid' : null ?>" id="fecha_edicion"
                             name="fecha_edicion" placeholder="Introduzca fecha de edición."
@@ -114,7 +117,7 @@
                         <?php foreach ($this->generos as $genero): ?>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="generos[]"
-                                    value="<?= $genero['id'] ?>">
+                                    value="<?= $genero['id'] ?>" <?= in_array($genero['id'], $this->libro_generos) ? 'checked' : '' ?>>
                                 <label class="form-check-label" for="genero<?= $genero['id'] ?>">
                                     <?= $genero['tema'] ?>
                                 </label>

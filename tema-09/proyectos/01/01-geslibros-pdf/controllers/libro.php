@@ -384,6 +384,7 @@ class Libro extends Controller
         # obtener objeto de la clase libro con el id asociado
         $this->view->libro = $this->model->read($this->view->id);
 
+
         // Compruebo si hay errores en la validación
         if (isset($_SESSION['error'])) {
 
@@ -442,14 +443,13 @@ class Libro extends Controller
         // inicio o continuo la sesión
         session_start();
 
-        var_dump('Hola');
-        exit();
-
-        // obtengo el token CSRF para pasarlo luego al formulario editar en caso de error
-        $csrf_token = $param[1];
-
-        // Validar token
-        $this->checkTokenCsrf($csrf_token);
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            // Manejar error de token CSRF
+            $_SESSION['mensaje_error'] = 'Token CSRF inválido.';
+            header('location:' . URL . 'libro/nuevo');
+            exit();
+        }
 
         // Comprobar si hay un usuario logueado
         $this->checkLogin();
@@ -595,7 +595,7 @@ class Libro extends Controller
             // Creo la variable de sesión error con los errores
             $_SESSION['error'] = $error;
 
-            header('location:' . URL . 'libro/editar/' . $id . '/' . $csrf_token);
+            header('location:' . URL . 'libro/editar/' . $id . '/' . $_POST['csrf_token']);
             exit();
         }
 
