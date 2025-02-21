@@ -12,17 +12,9 @@ class Contactar extends Controller
     function render()
     {
         // Crear token csrf
-        $this->view->csrf_token = $this->createToken();
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         $this->view->render('contactar/index');
 
-    }
-
-    public function crearTokenCsrf(){
-
-        // Crear token csrf
-        $token = md5(uniqid(microtime(), true));
-        $_SESSION['csrf_token'] = $token;
-        return $token;
     }
 }
