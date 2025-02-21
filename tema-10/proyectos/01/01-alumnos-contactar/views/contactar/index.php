@@ -20,7 +20,7 @@
                 <div class="card">
                     <div class="card-header">Formulario de Contacto</div>
                     <div class="card-body">
-                        <form method="POST"action="<?= URL ?>auth/validate_register">
+                        <form method="POST"action="<?= URL ?>contactar/validar">
                             <!-- token csrf -->
                             <input type="hidden" name="csrf_token"
                                 value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
@@ -55,41 +55,40 @@
                                 </div>
                             </div>
 
-                            <!-- password -->
+                            <!-- campo subject -->
                             <div class="mb-3 row">
-                                <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
-
+                                <label for="subject" class="col-md-4 col-form-label text-md-right">Asunto</label>
                                 <div class="col-md-6">
-                                    <input id="password" type="password"
-                                        class="form-control <?= (isset($this->errores['password'])) ? 'is-invalid' : null ?>"
-                                        name="password" value="<?= htmlspecialchars($this->password)  ?>" required
-                                        autocomplete="current-password">
-
+                                    <input id="subject" type="text"
+                                        class="form-control <?= (isset($this->errores['subject'])) ? 'is-invalid' : null ?>"
+                                        name="subject" value="<?= htmlspecialchars($this->subject); ?>" required
+                                        autocomplete="subject" autofocus>
                                     <!-- control de errores -->
                                     <span class="form-text text-danger" role="alert">
-                                        <?= $this->error['password']  ??= null ?>
+                                        <?= $this->error['subject']  ??= '' ?>
                                     </span>
                                 </div>
-                            </div>
 
-                            <!-- password confirmación -->
+                            <!-- campo message -->
                             <div class="mb-3 row">
-                                <label for="password_confirm" class="col-md-4 col-form-label text-md-right">Confirmar Password</label>
-
+                                <label for="message" class="col-md-4 col-form-label text-md-right">Mensaje</label>
                                 <div class="col-md-6">
-                                    <input id="password_confirm" type="password"
-                                        class="form-control"
-                                        name="password_confirm" required
-                                        autocomplete="password_confirm">
+                                    <textarea id="message" type="text"
+                                        class="form-control <?= (isset($this->errores['message'])) ? 'is-invalid' : null ?>"
+                                        name="message" value="<?= htmlspecialchars($this->message); ?>" required
+                                        autocomplete="message" autofocus></textarea>
+                                    <!-- control de errores -->
+                                    <span class="form-text text-danger" role="alert">
+                                        <?= $this->error['message']  ??= '' ?>
+                                    </span>
                                 </div>
-                            </div>
 
                             <!-- botones de acción -->
                             <div class="mb-3 row mb-0">
                                 <div class="col-md-8 offset-md-4">
-                                    <a class="btn btn-secondary" href="<?=URL?>auth/login" role="button">Cancelar</a>
+                                    <a class="btn btn-secondary" href="<?=URL?>index" role="button">Cancelar</a>
                                     <button type="reset" class="btn btn-secondary" >Reset</button>
-                                    <button type="submit" class="btn btn-primary">Registrar</button>
+                                    <button type="submit" class="btn btn-primary">Enviar</button>
                                 </div>
                             </div>
                         </form>
