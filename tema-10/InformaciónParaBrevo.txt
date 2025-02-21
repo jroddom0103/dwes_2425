@@ -1,0 +1,9 @@
+Página con información:
+
+- dirección servidor smtp
+- puerto
+- usuario
+- contraseña
+
+Vamos a usar en vez de brevo:
+Twilio.
