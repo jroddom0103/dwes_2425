@@ -1,5 +1,4 @@
 <?php
-
 class Contactar extends Controller
 {
 
@@ -10,13 +9,125 @@ class Contactar extends Controller
     }
 
     /*
-        Método checkTokenCsrf()
-
-        Permite checkear si el token CSRF es válido
-
-        @param
-            - string $csrf_token: token CSRF
+        Muestra el formulario de contacto
     */
+    function render()
+    {
+        // Continua o inicia sesión
+        session_start();
+
+        // Crear token csrf
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+        // Inicializo las variables para los campos del formulario
+        $this->view->name = '';
+        $this->view->email = '';
+        $this->view->subject = '';
+        $this->view->message = '';
+
+        // Compruebo si hay errores de una no validación anterior
+        if (isset($_SESSION['error'])) {
+
+            // Muestro los errores
+            $this->view->error = $_SESSION['error'];
+
+            // Retroalimento el formulario
+            $this->view->name = $_SESSION['name'];
+            $this->view->email = $_SESSION['email'];
+            $this->view->subject = $_SESSION['subject'];
+            $this->view->message = $_SESSION['message'];
+
+            // Elimino la variable de sesión
+            unset($_SESSION['error']);
+
+            // Elimino la variable de sesión del formulario
+            unset($_SESSION['name']);
+            unset($_SESSION['email']);
+            unset($_SESSION['subject']);
+            unset($_SESSION['message']);
+        }
+
+
+        // Cargar la vista
+        $this->view->render('contactar/form/index');
+    }
+
+    /*
+        Valida los datos del formulario de contacto
+    */
+    function validar()
+    {
+        // Continua o inicia sesión
+        session_start();
+
+        // Compruebo si el token csrf es válido
+        $this->checkTokenCsrf($_POST['csrf_token']);
+
+        // Recuperar los datos del formulario
+        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
+        $subject = filter_var($_POST['subject'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $message = filter_var($_POST['message'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // Validar los datos
+        $error = [];
+
+
+        // Comprobar que el nombre no está vacío
+        if (empty($name)) {
+            $error['name'] = 'El nombre es obligatorio';
+        }
+
+        // Comprobar que el email no está vacío
+        if (empty($email)) {
+            $error['email'] = 'El email es obligatorio';
+        }
+        // Comprobar que el email es válido
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error['email'] = 'El email no es válido';
+        }
+
+        // Comprobar que el asunto no está vacío
+        if (empty($subject)) {
+            $error['subject'] = 'El asunto es obligatorio';
+        }
+
+        // Comprobar que el mensaje no está vacío
+        if (empty($message)) {
+            $error['message'] = 'El mensaje es obligatorio';
+        }
+
+        // Si hay errores, los muestro
+        if (!empty($error)) {
+
+            // Guardo el error en variable de sesión
+            $_SESSION['error'] = $error;
+
+            // Guardo los datos en variables de sesión
+            $_SESSION['name'] = $name;
+            $_SESSION['email'] = $email;
+            $_SESSION['subject'] = $subject;
+            $_SESSION['message'] = $message;
+
+
+            // redireciona al formulario de nuevo
+            header('location:' . URL . 'contactar');
+            exit();
+        }
+
+        $cuerpo_mensaje = "Nombre: $name\n";
+        $cuerpo_mensaje .= "Email: $email\n";
+        $cuerpo_mensaje .= "Asunto: $subject\n";
+        $cuerpo_mensaje .= "Mensaje: $message\n";
+
+        // Si no hay errores, envío el email
+        $this->enviarEmail($name, $email, $subject, $cuerpo_mensaje);
+
+        // Muestro la vista de confirmación
+        $this->view->mensaje = 'Mensaje enviado correctamente';
+        $this->view->render('contactar/confirm/index');
+    }
+
     public function checkTokenCsrf($csrf_token)
     {
 
@@ -28,112 +139,14 @@ class Contactar extends Controller
         }
     }
 
-    function render()
+    /*
+        Envía un email
+    */
+    function enviarEmail($name, $email, $subject, $message)
     {
-        // Crear token csrf
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        require_once 'class/sendEmail.class.php';
 
-        // Inicializo las variables para los campos del formulario
-        $this->view->name = '';
-        $this->view->email = '';
-        $this->view->subject = '';
-        $this->view->message = '';
-
-        // Valida los datos del formulario de contacto
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-            // Verifica el token csrf
-            if ($_POST['csrf_token'] != $_SESSION['csrf_token']) {
-                $this->view->error['csrf_token'] = 'Token inválido';
-            }
-
-            // Verifica el campo name
-            if (empty($_POST['name'])) {
-                $this->view->error['name'] = 'El campo name es obligatorio';
-            } else {
-                $this->view->name = $_POST['name'];
-            }
-
-            // Verifica el campo email
-            if (empty($_POST['email'])) {
-                $this->view->error['email'] = 'El campo email es obligatorio';
-            } else {
-                $this->view->email = $_POST['email'];
-            }
-
-            // Verifica el campo subject
-            if (empty($_POST['subject'])) {
-                $this->view->error['subject'] = 'El campo subject es obligatorio';
-            } else {
-                $this->view->subject = $_POST['subject'];
-            }
-
-            // Verifica el campo message
-            if (empty($_POST['message'])) {
-                $this->view->error['message'] = 'El campo message es obligatorio';
-            } else {
-                $this->view->message = $_POST['message'];
-            }
-
-            // Si no hay errores, envía el formulario
-            if (empty($this->view->error)) {
-                // Envía el formulario
-                $this->view->mensaje = 'Formulario enviado';
-            }
-        }
-
-        $this->view->render('contactar/index');
+        SendEmail::enviarEmail($name, $email, $subject, $message);
 
     }
-
-    function validar(){
-
-        // Validar token
-        $this->checkTokenCsrf($_POST['csrf_token']);
-
-        // Recuperar los datos del formulario
-        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
-        $subject = filter_var($_POST['subject'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $message = filter_var($_POST['message'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-
-        $error = [];
-
-
-        // Validar los datos
-
-        // Comprobar que el nombre no está vacío
-        if (empty($name)) {
-            $error['name'] = 'El campo name es obligatorio';
-        }
-
-        // Comprobar que el email no está vacío
-        if (empty($email)) {
-            $error['email'] = 'El campo email es obligatorio';
-        }
-
-        // Comprobar que el asunto no está vacío
-        if (empty($subject)){
-            $error['subject'] = 'El campo subject es obligatorio';
-        }
-
-        // Comprobar que el mensaje no está vacío
-        if (empty($message)){
-            $error['message'] = 'El campo message es obligatorio';
-        }
-
-        // Si hay errores, los muestro
-        if (!empty($error)) {
-            $this->view->error = $error;
-            $this->view->name = $name;
-            $this->view->email = $email;
-            $this->view->subject = $subject;
-            $this->view->message = $message;
-            $this->view->render('contactar/index');
-            exit();
-        }
-    
-    }
-
-    
 }

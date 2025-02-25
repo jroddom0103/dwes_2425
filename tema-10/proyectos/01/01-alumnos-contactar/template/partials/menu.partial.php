@@ -17,9 +17,6 @@
           <a class="nav-link active" href="<?= URL ?>contactar">Contactar</a>
         </li>
         <!-- <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>alumno">Alumnos</a>
-        </li> -->
-        <!-- <li class="nav-item">
           <a class="nav-link" href="<?= URL ?>asignatura">Asignaturas</a>
         </li>
         <li class="nav-item">

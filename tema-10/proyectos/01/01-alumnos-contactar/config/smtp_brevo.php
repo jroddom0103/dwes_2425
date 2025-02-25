@@ -1,17 +1,17 @@
 <?php
 
-/*
-    Configuración acceso servidor SMTP brevo
-*/
+    /*
+        Configuración acceso servidor SMTP brevo
+    */
 
-// Host smtp brevo
-define('SMTP_HOST', 'smtp-relay.brevo.com');
+    // Host smtp brevo
+    define('SMTP_HOST', 'smtp-relay.brevo.com');
 
-// Puerto smtp brevo
-define('SMTP_PORT', 587);
+    // Puerto smtp brevo
+    define('SMTP_PORT', 587);
 
-// Usuario smtp brevo: Poner el correo con el que se da de alta en brevo
-define('SMTP_USER', 'androifireofficial@gmail.com');
+    // Usuario smtp brevo
+    define('SMTP_USER', 'nerom24@gmail.com');
 
-// Contraseña smtp brevo
-define('SMTP_PASS', 'GUETEZ1234Abc@');
+    // Contraseña smtp brevo
+    define('SMTP_PASS', 'fkjhX7K8zO6x05tH');

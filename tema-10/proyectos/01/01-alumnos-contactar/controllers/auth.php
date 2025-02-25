@@ -178,10 +178,10 @@ class Auth extends Controller
         $_SESSION['role_name'] = $this->model->getNamePerfil($_SESSION['role_id']);
 
         // Generar mensaje de inicio de sesión
-        $_SESSION['mensaje'] = "Usuario ". $user->name. " ha iniciado sesión con perfil ". $_SESSION['role_name'];
+        $_SESSION['mensaje'] = "Usuario " . $user->name . " ha iniciado sesión con perfil " . $_SESSION['role_name'];
 
         // redirección al panel de control
-        header("location:". URL. "alumno");
+        header("location:" . URL . "alumno");
 
 
     }
@@ -305,14 +305,14 @@ class Auth extends Controller
         } else if (!$this->model->validateUniqueEmail($email)) {
             $error['email'] = 'El email ya existe';
         }
-       
+
         // Validación password
         // Reglas: obligatorio, longitud mínima 7 caracteres, campos coincidentes
         if (empty($password)) {
             $error['password'] = 'La contraseña es obligatoria';
         } else if (strlen($password) < 7) {
             $error['password'] = 'La contraseña debe tener al menos 7 caracteres';
-        } else if (strcmp($password, $password_confirm) !== 0 ) {
+        } else if (strcmp($password, $password_confirm) !== 0) {
             $error['password'] = 'Las contraseñas no coinciden';
         }
 
@@ -348,6 +348,13 @@ class Auth extends Controller
         // 3 es el id del perfil de registrado
         $this->model->assignRole($id, 3);
 
+        $cuerpo_mensaje = "Nombre: $name\n";
+        $cuerpo_mensaje .= "Email: $email\n";
+        $cuerpo_mensaje .= "Mensaje: Usuario registrado correctamente en la web .....\n";
+
+        // Enviar correo
+        $this->enviarEmail($name, 'eruditoma@gmail.com', 'Registro de usuario', $cuerpo_mensaje);
+
         // Genero mensaje de éxito
         $_SESSION['mensaje'] = 'Usuario registrado correctamente';
 
@@ -355,6 +362,17 @@ class Auth extends Controller
         header('location:' . URL . 'auth/login');
         exit();
 
+    }
+
+    /*
+       Envía un email
+   */
+    function enviarEmail($name, $email, $subject, $message)
+    {
+
+        require_once 'class/sendEmail.class.php';
+
+        SendEmail::enviarEmail($name, $email, $subject, $message);
     }
 
     /*

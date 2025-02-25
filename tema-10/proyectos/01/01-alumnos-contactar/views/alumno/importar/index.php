@@ -36,6 +36,20 @@
 
                     <!-- Fichero csv -->
                     <div class="mb-3">
+                        
+                        <label for="formFile" class="form-label">
+                            <legend>Formato CSV:</legend>
+                            <ul>
+                                <li>Columna 1: nombre</li>
+                                <li>Columna 2: apellidos</li>
+                                <li>Columna 3: email</li>
+                                <li>Columna 4: telefono</li>
+                                <li>Columna 5: nacionalidad</li>
+                                <li>Columna 6: dni</li>
+                                <li>Columna 7: fecha_nacimiento</li>
+                                <li>Columna 8: id curso</li>
+                            </ul>
+                        </label>
                         <input type="file" class="form-control" name="file" id="formFile" accept=".csv">
                     </div>
             </div>

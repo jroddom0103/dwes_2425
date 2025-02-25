@@ -3,7 +3,7 @@
 
 # Ruta absoluta
 
-define('URL', 'http://localhost:8080/DWES/tema-10/proyectos/01/01-alumnos-contactar/');
+define('URL', 'http://localhost/dwes_2425/tema-10/proyectos/01-alumnos-contactar/');
 
 # Constante de la Base de Datos
 define('HOST', 'localhost');

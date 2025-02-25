@@ -1068,21 +1068,21 @@ class Alumno extends Controller
 
             // Validar DNI
             if (!$this->model->validateUniqueDNI($linea[5])) {
-                $_SESSION['mensaje_error'] = 'El DNI ' . $linea[5] . ' ya existe';
+                $_SESSION['mensaje_error'] = 'En la línea'. count($alumnos). ' del fichero, el DNI ' . $linea[5] . ' ya existe';
                 header('location:' . URL . 'alumno/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }
 
             // Validar email
             if (!$this->model->validateUniqueEmail($linea[2])) {
-                $_SESSION['mensaje_error'] = 'El email ' . $linea[2] . ' ya existe';
+                $_SESSION['mensaje_error'] = 'En la línea'. count($alumnos). ' del fichero, el email ' . $linea[2] . ' ya existe';
                 header('location:' . URL . 'alumno/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }
 
             // Validar id_curso
             if (!$this->model->validateForeignKeyCurso($linea[7])) {
-                $_SESSION['mensaje_error'] = 'El curso ' . $linea[7] . ' no existe';
+                $_SESSION['mensaje_error'] = 'En la línea'. count($alumnos). ' del fichero, el curso ' . $linea[7] . ' no existe';
                 header('location:' . URL . 'alumno/importar/csv/' . $_POST['csrf_token']);
                 exit();
             }
