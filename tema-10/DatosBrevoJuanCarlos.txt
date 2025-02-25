@@ -1,0 +1,2 @@
+SMTP_USER: nerom24@gmail.com
+SMTP_PASS: 'fkjhX7K8zO6x05tH'
