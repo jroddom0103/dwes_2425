@@ -1,7 +1,7 @@
 <?php
 
 // Configuración de la cuenta de correo
-require_once 'config/smtp_gmail.php';
+require_once 'config/smtp_brevo.php';
 
 // Cargar la librería PHPMailer
 require_once 'extensions/PHPMailer/src/PHPMailer.php';
