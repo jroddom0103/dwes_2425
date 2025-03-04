@@ -1,0 +1,17 @@
+Apuntes Laravel
+
+Controlador de un sólo método
+
+php artisan make:controller HomeController --invokable
+
+Importar bases de datos necesarias para ejecución
+
+php artisan migrate
+
+La inyección XSS está asegurada en Laravel de por sí. No hay que hacer nada de eso.
+
+Blade:
+
+En vez de <?=$nombre?> se usa {{ $nombre }}
+
+Para que no filtre se usa {!! $curso !!}. Por aquí sí pueden meter XSS.
